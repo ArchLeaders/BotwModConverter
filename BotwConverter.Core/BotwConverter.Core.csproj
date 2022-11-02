@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SarcLibrary" Version="1.0.6" />
+    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.4" />
+    <PackageReference Include="Yaz0Library" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Bcml">
+      <HintPath>..\..\..\..\Libraries\Botw\SimpleAccessLibrary\Bcml.Utils\bin\Debug\net6.0\Bcml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
