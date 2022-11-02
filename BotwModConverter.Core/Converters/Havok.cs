@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotwConverter.Core.Converters
+namespace BotwModConverter.Core.Converters
 {
-    public class BFRES
+    public class Havok
     {
         public static async Task<byte[]> Convert(byte[] data)
         {

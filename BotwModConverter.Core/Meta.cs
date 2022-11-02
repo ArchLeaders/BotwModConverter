@@ -1,4 +1,4 @@
-﻿namespace BotwConverter.Core
+﻿namespace BotwModConverter.Core
 {
     public static class Meta
     {
