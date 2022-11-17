@@ -46,13 +46,15 @@ namespace BotwModConverter.Core
 
         public static bool IsFileModded(string name, byte[] bytes, bool allowNew = true)
         {
-            var table = Bcml.Utils.GetHashTable();
+            //var table = Bcml.Utils.GetHashTable();
 
-            if (!table.ContainsKey(name)) {
-                return allowNew;
-            }
+            //if (!table.ContainsKey(name)) {
+            //    return allowNew;
+            //}
 
-            return !table[name].Contains(xxHash64.ComputeHash(UnYaz(bytes)));
+            //return !table[name].Contains(xxHash64.ComputeHash(UnYaz(bytes)));
+            
+            throw new NotImplementedException();
         }
 
         public static byte[] GetStockBfstp(string name, string barsFile)

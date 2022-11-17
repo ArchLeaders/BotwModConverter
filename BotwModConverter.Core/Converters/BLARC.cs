@@ -11,6 +11,8 @@ namespace BotwModConverter.Core.Converters
     {
         public static async Task<byte[]> Convert(byte[] data, string file)
         {
+            throw new NotImplementedException();
+
             SarcFile blarc = new(Utils.UnYaz(data, out bool isYaz0));
 
             // get a Dictionary<string, byte[]> of bflim files
@@ -22,9 +24,9 @@ namespace BotwModConverter.Core.Converters
             }
 
             // get a stock sblarc to pull a bntx
-            SarcFile blarc_nx = Path.GetFileName(file.Split("//")[0]) == "Bootup.pack"
-                ? new(Bcml.Utils.GetGameFile("Pack\\Bootup.pack\\\\Layout\\Common.sblarc"))
-                : new(Bcml.Utils.GetGameFile("Pack\\Title.pack\\\\Layout\\Title.sblarc"));
+            SarcFile blarc_nx = null; // Path.GetFileName(file.Split("//")[0]) == "Bootup.pack"
+            //    ? new(Bcml.Utils.GetGameFile("Pack\\Bootup.pack\\\\Layout\\Common.sblarc"))
+            //    : new(Bcml.Utils.GetGameFile("Pack\\Title.pack\\\\Layout\\Title.sblarc"));
             byte[] bntxFile = blarc_nx.Files["timg/__Combined.bntx"];
 
             // inject the wiiu bflim files into the switch bntx
