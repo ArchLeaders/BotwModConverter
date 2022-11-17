@@ -1,8 +1,8 @@
 ﻿namespace BotwModConverter.Core
 {
-    internal interface IBotwConverter
+    public interface IBotwConverter
     {
-        public byte[] ConvertToWiiu(byte[] data);
-        public byte[] ConvertToSwitch(byte[] data);
+        public Task<byte[]> ConvertToWiiu(byte[] data);
+        public Task<byte[]> ConvertToSwitch(byte[] data);
     }
 }
