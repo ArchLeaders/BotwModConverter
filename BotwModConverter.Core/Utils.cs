@@ -13,16 +13,37 @@ namespace BotwModConverter.Core
     {
         public static Dictionary<string[], IBotwConverter> Converters { get; } = new() {
             { new string[] {
-                ".bxml", ".bas", ".baglblm", ".baglccr", ".baglclwd", ".baglcube", ".bagldof",
+                ".bactcapt", ".baglblm", ".baglccr", ".baglclwd", ".baglcube", ".bagldof",
                 ".baglenv", ".baglenvset", ".baglfila", ".bagllmap", ".bagllref", ".baglmf", ".baglshpp",
-                ".baiprog", ".baslist", ".bassetting", ".batcl", ".batcllist", ".bawareness", ".bawntable",
+                ".baiprog", ".bas", ".baslist", ".bassetting", ".batcl", ".batcllist", ".bawareness", ".bawntable",
                 ".bbonectrl", ".bchemical", ".bchmres", ".bdemo", ".bdgnenv", ".bdmgparam", ".bdrop",
                 ".bgapkginfo", ".bgapkglist", ".bgenv", ".bglght", ".bgmsconf", ".bgparamlist", ".bgsdw",
                 ".bksky", ".blifecondition", ".blod", ".bmodellist", ".bmscdef", ".bmscinfo", ".bnetfp",
                 ".bphyscharcon", ".bphyscontact", ".bphysics", ".bphyslayer", ".bphysmaterial", ".bphyssb", ".bphyssubmat",
                 ".bptclconf", ".brecipe", ".brgbw", ".brgcon", ".brgconfig", ".brgconfiglist", ".bsfbt",
-                ".bsft", ".bshop", ".bumii", ".bvege", ".bactcapt",
-            }, new Converters.Aamp() }
+                ".bsft", ".bshop", ".bumii", ".bvege", ".bxml",
+            }, new Converters.Aamp() },
+            // Binary Ecosystem (".beco")
+            // Binary Format Event Flow (".bfevfl", ".bfevtm")
+            // Binary Loop Asset List (".blal")
+            { new string[] {
+                ".baischedule", ".baniminfo", ".bgdata", ".bgsvdata", ".bquestpack", ".byml", ".mubin"
+            }, new Converters.Byml() },
+            // AnimationDrivenSpeed/AnimalUnitSpeed (".bin") ???
+            // Emitter Set List (".esetlist")
+            // Grass Colour Layout ("grass.extm")
+            { new string[] {
+                "hkcl", "hknm2", "hkrb", "hkrg", "hksc", "hktm"
+            }, new Converters.Havok() },
+            // MATE (".mate") ???
+            // Message Studio Binary Text (".msbt")
+            // ResourceSizeTable (".rstb")
+            { new string[] {
+                ".bactorpack", ".beventpack", ".bgenv", ".blarc", ".bmodelsh", ".genvb", ".pack",
+                ".sarc", ".stats", ".stera",
+            }, new Converters.Sarc() },
+            // Terrain Scene Binary (".tscb")
+            // Water Layout ("water.extm")
         };
 
         public static bool IsYaz0Compressed(ref byte[] buffer)
@@ -78,7 +99,7 @@ namespace BotwModConverter.Core
             //}
 
             //return !table[name].Contains(xxHash64.ComputeHash(UnYaz(bytes)));
-            
+
             throw new NotImplementedException();
         }
 
