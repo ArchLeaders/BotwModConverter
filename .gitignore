@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# BOTW Test Mods & Misc Data
+
+test-data/
+
 # User-specific files
 *.rsuser
 *.suo
