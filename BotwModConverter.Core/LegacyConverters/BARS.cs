@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotwModConverter.Core.Converters
+namespace BotwModConverter.Core.LegacyConverters
 {
     public class BARS
     {

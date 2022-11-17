@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotwModConverter.Core.Converters
+namespace BotwModConverter.Core.LegacyConverters
 {
     public class BFLIM
     {
