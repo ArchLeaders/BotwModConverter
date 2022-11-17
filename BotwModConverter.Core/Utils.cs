@@ -25,6 +25,17 @@ namespace BotwModConverter.Core
             }, new Converters.Aamp() }
         };
 
+        public static bool IsYaz0Compressed(ref byte[] buffer)
+        {
+            if (buffer[0..3] == Encoding.ASCII.GetBytes("Yaz0")) {
+                buffer = Yaz0.DecompressFast(buffer);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
         public static byte[] UnYaz(this byte[] raw) => UnYazReport(raw).Value;
         public static byte[] UnYaz(this byte[] raw, out bool wasDecompressed)
         {
