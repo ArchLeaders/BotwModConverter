@@ -1,4 +1,6 @@
 ﻿using BotwModConverter.Core.Helpers;
+using Microsoft.VisualBasic.FileIO;
+using Nintendo.Yaz0;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +17,7 @@ namespace BotwModConverter.Core
         public static Task Convert(string mod, bool createBackup = true)
         {
             if (createBackup) {
-                DirectoryHelper.Copy(mod, $"{mod}/../{Path.GetFileName(mod)}-{DateTime.Now:yyyy.M.m.s}-Backup");
+                DirectoryHelper.Copy(mod, $"{mod}/../{Path.GetFileName(mod)}-Backups/{DateTime.Now:yyyy.M.m.s}/");
             }
 
             return Parallel.ForEachAsync(new string[] { "aoc", "content" }, async (folderName, _) => {
@@ -45,12 +47,23 @@ namespace BotwModConverter.Core
 
         public static async Task ConvertFile(string file)
         {
-            // Get convert from file ext
-            // Convert
-            // Write the new file
+            byte[] data = File.ReadAllBytes(file);
+            string ext = Path.GetExtension(file);
+            await File.WriteAllBytesAsync(file, await ConvertData(data, ext));
+        }
 
-            Debug.WriteLine(Path.GetFileName(file));
-            await Task.Delay(5000);
+        public static async Task<byte[]> ConvertData(byte[] data, string ext)
+        {
+            foreach ((var keys, var converter) in Utils.Converters) {
+                if (keys.Contains(ext)) {
+                    bool isYaz0 = Utils.IsYaz0Compressed(ref data);
+                    byte[] converted = await converter.ConvertToWiiu(data);
+                    return isYaz0 ? Yaz0.CompressFast(converted) : converted;
+                }
+            }
+
+            _ = Task.Run(() => Debug.WriteLine($"The file extension '{ext}' is not yet supported by the converter."));
+            return data;
         }
     }
 }

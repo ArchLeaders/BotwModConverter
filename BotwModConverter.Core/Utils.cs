@@ -11,6 +11,20 @@ namespace BotwModConverter.Core
 {
     public static class Utils
     {
+        public static Dictionary<string[], IBotwConverter> Converters { get; } = new() {
+            { new string[] {
+                ".bxml", ".bas", ".baglblm", ".baglccr", ".baglclwd", ".baglcube", ".bagldof",
+                ".baglenv", ".baglenvset", ".baglfila", ".bagllmap", ".bagllref", ".baglmf", ".baglshpp",
+                ".baiprog", ".baslist", ".bassetting", ".batcl", ".batcllist", ".bawareness", ".bawntable",
+                ".bbonectrl", ".bchemical", ".bchmres", ".bdemo", ".bdgnenv", ".bdmgparam", ".bdrop",
+                ".bgapkginfo", ".bgapkglist", ".bgenv", ".bglght", ".bgmsconf", ".bgparamlist", ".bgsdw",
+                ".bksky", ".blifecondition", ".blod", ".bmodellist", ".bmscdef", ".bmscinfo", ".bnetfp",
+                ".bphyscharcon", ".bphyscontact", ".bphysics", ".bphyslayer", ".bphysmaterial", ".bphyssb", ".bphyssubmat",
+                ".bptclconf", ".brecipe", ".brgbw", ".brgcon", ".brgconfig", ".brgconfiglist", ".bsfbt",
+                ".bsft", ".bshop", ".bumii", ".bvege", ".bactcapt",
+            }, new Converters.Aamp() }
+        };
+
         public static byte[] UnYaz(this byte[] raw) => UnYazReport(raw).Value;
         public static byte[] UnYaz(this byte[] raw, out bool wasDecompressed)
         {
