@@ -11,7 +11,7 @@ namespace BotwModConverter.UnitTests
     public class BotwConverterTests
     {
         [TestMethod]
-        [DataRow(@"D:\Botw\Mods\Works in Progress\Bunker\Bunker\Build")]
+        [DataRow("../../../test-data/Bunker")]
         public async Task Convert(string mod)
         {
             await BotwConverter.Convert(mod);
