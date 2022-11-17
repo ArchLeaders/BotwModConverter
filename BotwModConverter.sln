@@ -5,6 +5,10 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwModConverter.Core", "BotwModConverter.Core\BotwModConverter.Core.csproj", "{89940321-4793-49D6-86EE-944C04E4E7CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwModConverter.Console", "BotwModConverter.Console\BotwModConverter.Console.csproj", "{6CE6EBF7-5B76-4627-8351-A49DE7FDA773}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwModConverter.UnitTests", "BotwModConverter.UnitTests\BotwModConverter.UnitTests.csproj", "{17AD82E5-75BD-4DE4-AE3D-36395AAFC9FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{89940321-4793-49D6-86EE-944C04E4E7CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89940321-4793-49D6-86EE-944C04E4E7CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89940321-4793-49D6-86EE-944C04E4E7CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CE6EBF7-5B76-4627-8351-A49DE7FDA773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CE6EBF7-5B76-4627-8351-A49DE7FDA773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CE6EBF7-5B76-4627-8351-A49DE7FDA773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CE6EBF7-5B76-4627-8351-A49DE7FDA773}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17AD82E5-75BD-4DE4-AE3D-36395AAFC9FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17AD82E5-75BD-4DE4-AE3D-36395AAFC9FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17AD82E5-75BD-4DE4-AE3D-36395AAFC9FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17AD82E5-75BD-4DE4-AE3D-36395AAFC9FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
