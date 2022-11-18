@@ -1,5 +1,4 @@
 ﻿using Nintendo.Yaz0;
-using Standart.Hash.xxHash;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +22,10 @@ namespace BotwModConverter.Core
                 ".bptclconf", ".brecipe", ".brgbw", ".brgcon", ".brgconfig", ".brgconfiglist", ".bsfbt",
                 ".bsft", ".bshop", ".bumii", ".bvege", ".bxml",
             }, new Converters.Aamp() },
+            // Binary Archive Resource Stream
+            { new string[] {
+                ".bfres", ".bitemico", ".bcamanim"
+            }, new Converters.Bfres() },
             // Binary Ecosystem (".beco")
             // Binary Format Event Flow (".bfevfl", ".bfevtm")
             // Binary Loop Asset List (".blal")
