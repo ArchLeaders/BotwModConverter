@@ -46,10 +46,10 @@ namespace BotwModConverter.Core
             // Water Layout ("water.extm")
         };
 
-        public static bool IsYaz0Compressed(ref byte[] buffer)
+        public static bool IsYaz0Compressed(ref byte[] data)
         {
-            if (buffer[0..3] == Encoding.ASCII.GetBytes("Yaz0")) {
-                buffer = Yaz0.DecompressFast(buffer);
+            if (Enumerable.SequenceEqual(data[0..4], "Yaz0"u8.ToArray())) {
+                data = Yaz0.DecompressFast(data);
                 return true;
             }
             else {
