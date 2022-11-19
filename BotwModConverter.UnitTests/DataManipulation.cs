@@ -107,10 +107,29 @@ namespace BotwModConverter.UnitTests
         [TestMethod]
         public void BuildTable()
         {
+            static string Align(string insert, int max)
+            {
+                decimal factor = (decimal)(max - insert.Length) / 2;
+                int padding = (int)Math.Floor(factor);
+                return insert.PadLeft(insert.Length + padding, ' ').PadRight(max, ' ');
+            }
+
+            static string ToLiteral(string valueTextForCompiler)
+            {
+                return Microsoft.CodeAnalysis.CSharp.SymbolDisplay.FormatLiteral(valueTextForCompiler, false);
+            }
+
             string[] paths = new string[] {
                 "../../../test-data/Dlc.json",
                 "../../../test-data/Update.json",
                 "../../../test-data/BaseGame.json",
+            };
+
+            string[] skip = new string[] {
+                ".extm", ".mate", ".hght",
+                ".fmc", ".mp4", ".bin",
+                ".txt", ".bflim", ".beco",
+                ".fxparam"
             };
 
             Dictionary<string, List<FileInfo>> merged = new();
@@ -119,24 +138,23 @@ namespace BotwModConverter.UnitTests
                 Dictionary<string, List<FileInfo>> entries = (Dictionary<string, List<FileInfo>>)JsonSerializer.Deserialize(File.ReadAllText(path), typeof(Dictionary<string, List<FileInfo>>))!;
 
                 foreach (var entry in entries) {
-                    if (!merged.ContainsKey(entry.Key)) {
-                        merged.Add(entry.Key, new());
+                    if (entry.Value.Select(x => x.Ext).Where(x => skip.Contains(x)).Any()) {
+                        continue;
                     }
 
-                    merged[entry.Key] = merged[entry.Key].Concat(entry.Value.Where(x => merged[entry.Key].Select(x => x.FilePath).Contains(x.FilePath))).ToList();
+                    string key = ToLiteral(entry.Key.Replace("BY\0\u0002", "BY").Replace("W��W", "W??W"));
+                    if (!merged.ContainsKey(key)) {
+                        merged.Add(key, new());
+                    }
+
+                    merged[key] = merged[key].Concat(entry.Value.Where(x => !merged[key].Select(x => x.FilePath).Contains(x.FilePath))).ToList();
                 }
             }
 
-            static string Align(string insert, int max)
-            {
-                int padding = (int)Math.Floor((double)(max - insert.Length) / 2);
-                return insert.PadLeft(padding, ' ');
-            }
-
-            int maxColMagic = 8;
-            int maxColExt = merged.Max(x => x.Value.Max(y => y.Ext))!.Length;
-            maxColExt = "Extension".Length > maxColExt ? "Extension".Length : maxColExt;
-            int maxColYaz = "Yaz0 Compressed".Length;
+            int maxColMagic = merged.Max(x => x.Key.Length) + 2;
+            int maxColExt = merged.Max(x => x.Value.Max(x => x.Ext.Length)) + 2;
+            maxColExt = "Extension".Length > maxColExt ? "Extension".Length + 2: maxColExt;
+            int maxColYaz = "Yaz0 Compressed".Length + 2;
             int maxColDesc = 40;
             int maxColState = 12;
             int maxColInfo = 20;
@@ -144,14 +162,14 @@ namespace BotwModConverter.UnitTests
             StringBuilder mdDoc = new("# Botw Data Types\n\n");
 
             StringBuilder table = new(
-                $"|{Align("Magic", maxColMagic)}|{Align("Extensions", maxColExt)}" +
-                $"|{Align("Yaz0 Compressed", maxColYaz)}|:{Align("Description", maxColDesc)}" +
-                $"|{Align("IO State", maxColState)}|:{Align("Conversion Info", maxColInfo)}"
+                $"|{Align("Magic", maxColMagic)}|{Align("Extension", maxColExt)}" +
+                $"|{Align("Yaz0 Compressed", maxColYaz)}|{Align("Description", maxColDesc)}" +
+                $"|{Align("IO State", maxColState)}|{Align("Conversion Info", maxColInfo)}|\n"
             );
             table.AppendLine(
                 $"|:{new string('-', maxColMagic-2)}:|:{new string('-', maxColExt-2)}:" +
                 $"|:{new string('-', maxColYaz-2)}:|{new string('-', maxColDesc)}" +
-                $"|:{new string('-', maxColState-2)}:|{new string('-', maxColInfo)}"
+                $"|:{new string('-', maxColState-2)}:|{new string('-', maxColInfo)}|"
             );
 
             StringBuilder types = new();
@@ -160,27 +178,36 @@ namespace BotwModConverter.UnitTests
                 types.AppendLine($"## {entry.Key}\n");
 
                 types.AppendLine($"### Extensions:\n");
-                foreach (var item in entry.Value.OrderBy(x => x.Ext)) {
+                foreach (var item in entry.Value.DistinctBy(x => x.Ext).OrderBy(x => x.Ext)) {
                     types.AppendLine($"- {item.Ext} | Yaz0: `{item.IsYaz0}`");
                 }
                 types.AppendLine();
 
+                // Overkill
+                // 
                 types.AppendLine($"### File Paths:\n");
+                int counter = 1;
                 foreach (var item in entry.Value.OrderBy(x => x.FilePath)) {
                     types.AppendLine($"- *\"{item.FilePath}\"*");
+
+                    counter++;
+                    if (counter > 3) {
+                        break;
+                    }
                 }
-                types.AppendLine();
-                types.AppendLine($"\n<br>\n");
+                types.AppendLine($"- `...`\n\n<br>\n");
 
                 table.AppendLine(
                     $"|{Align(entry.Key, maxColMagic)}|{Align(entry.Value.OrderBy(x => x.Ext).First().Ext, maxColExt)}" +
                     $"|{Align(entry.Value.OrderBy(x => x.Ext).First().IsYaz0.ToString(), maxColYaz)}" +
-                    $"|{new string(' ', maxColDesc)}|{new string(' ', maxColState)}|{new string(' ', maxColInfo)}"
+                    $"|{new string(' ', maxColDesc)}|{new string(' ', maxColState)}|{new string(' ', maxColInfo)}|"
                 );
             }
 
             mdDoc.AppendLine(table.ToString());
             mdDoc.AppendLine(types.ToString());
+            mdDoc.AppendLine("---\n");
+            mdDoc.AppendLine($"#### Ignored File Extensions: \n- {string.Join("\n- ", skip.Order())}");
 
             File.WriteAllText("../../../test-data/BotwDataTypes.md", mdDoc.ToString());
         }
