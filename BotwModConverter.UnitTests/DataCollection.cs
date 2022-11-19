@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace BotwModConverter.UnitTests
 {
     [TestClass]
-    public class DataManipulation
+    public class DataCollection
     {
         public record Info(string Header, bool IsYaz0);
         public record FileInfo(string FilePath, string Ext, bool IsYaz0);
