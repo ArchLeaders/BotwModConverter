@@ -262,7 +262,7 @@ namespace BotwModConverter.UnitTests
         public void BenchmarkHashSet(string path)
         {
             var watch = Stopwatch.StartNew();
-            byte[] data = Yaz0.DecompressFast(path);
+            byte[] data = Yaz0.Decompress(path);
             watch.Stop();
             Console.WriteLine($"Decompressed in: {watch.ElapsedMilliseconds}ms");
 
