@@ -210,8 +210,8 @@ namespace BotwModConverter.UnitTests
         }
 
         [TestMethod]
-        [DataRow("../../../test-data/wiiu", "../../../../Data/wiiu.xxhash")]
-        [DataRow("../../../test-data/switch", "../../../../Data/switch.xxhash")]
+        [DataRow("../../../test-data/wiiu", "../../../../BotwModConverter.Core/Data/wiiu.xxhash")]
+        [DataRow("../../../test-data/switch", "../../../../BotwModConverter.Core/Data/switch.xxhash")]
         public void Hash(string path, string output)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(output)!);
@@ -257,8 +257,8 @@ namespace BotwModConverter.UnitTests
         }
 
         [TestMethod]
-        [DataRow("../../../../Data/wiiu.xxhash")]
-        [DataRow("../../../../Data/switch.xxhash")]
+        [DataRow("../../../../BotwModConverter.Core/Data/wiiu.xxhash")]
+        [DataRow("../../../../BotwModConverter.Core/Data/switch.xxhash")]
         public void BenchmarkHashSet(string path)
         {
             var watch = Stopwatch.StartNew();
