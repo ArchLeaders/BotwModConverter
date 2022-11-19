@@ -1,29 +1,29 @@
 # Botw Data Types
 
-|Magic |    Extension    | Yaz0 Compressed |              Description               |  IO State  |  Conversion Info   |
-|:----:|:---------------:|:---------------:|----------------------------------------|:----------:|--------------------|
-| AAMP |    .baiprog     |      False      |                                        |            |                    |
-| AGST |     .bagst      |      False      |                                        |            |                    |
-| BARS |      .bars      |      False      |                                        |            |                    |
-| BFEV |     .bfevfl     |      False      |                                        |            |                    |
-| BLAL |      .blal      |      False      |                                        |            |                    |
-|  BY  |  .baischedule   |      False      |                                        |            |                    |
-| EFTB |    .esetlist    |      True       |                                        |            |                    |
-| FFNT |     .bffnt      |      False      |                                        |            |                    |
-| FLAN |     .bflan      |      False      |                                        |            |                    |
-| FLYT |     .bflyt      |      False      |                                        |            |                    |
-| FRES |    .bcamanim    |      False      |                                        |            |                    |
-| FSAR |     .bfsar      |      False      |                                        |            |                    |
-| FSHA |     .bfsha      |      True       |                                        |            |                    |
-| FSTM |     .bfstm      |      False      |                                        |            |                    |
-| Gfx2 |      .gsh       |      False      |                                        |            |                    |
-| PrOD |      .blwp      |      True       |                                        |            |                    |
-| RSTB |   .rsizetable   |      True       |                                        |            |                    |
-| SARC |    .baatarc     |      False      |                                        |            |                    |
-| STAT |    .agstats     |      False      |                                        |            |                    |
-| TSCB |      .tscb      |      False      |                                        |            |                    |
-| W??W |      .hkcl      |      False      |                                        |            |                    |
-| XLNK |     .belnk      |      True       |                                        |            |                    |
+|Magic |    Extension    | Yaz0 Compressed |              Description               |   IO State  |  Conversion Info   |
+|:----:|:---------------:|:---------------:|----------------------------------------|:-----------:|--------------------|
+| AAMP |    .baiprog     |      False      |                                        | Switch/WiiU |      Endianess     |
+| AGST |     .bagst      |      False      |                                        |             |                    |
+| BARS |      .bars      |      False      |                                        |             |                    |
+| BFEV |     .bfevfl     |      False      |                                        | Switch/WiiU |        None        |
+| BLAL |      .blal      |      False      |                                        |             |                    |
+|  BY  |  .baischedule   |      False      |                                        | Switch/WiiU |      Endianess     |
+| EFTB |    .esetlist    |      True       |                                        |             |                    |
+| FFNT |     .bffnt      |      False      |                                        |             |                    |
+| FLAN |     .bflan      |      False      |                                        |             |                    |
+| FLYT |     .bflyt      |      False      |                                        |             |                    |
+| FRES |    .bcamanim    |      False      |                                        |   > WiiU    |      *Stuff?*      |
+| FSAR |     .bfsar      |      False      |                                        |             |                    |
+| FSHA |     .bfsha      |      True       |                                        |             |                    |
+| FSTM |     .bfstm      |      False      |                                        |             |                    |
+| Gfx2 |      .gsh       |      False      |                                        |             |                    |
+| PrOD |      .blwp      |      True       |                                        |             |                    |
+| RSTB |   .rsizetable   |      True       |                                        | Switch/WiiU |  Endianess & Data  |
+| SARC |    .baatarc     |      False      |                                        | Switch/WiiU |     Endianess?     |
+| STAT |    .agstats     |      False      |                                        |             |                    |
+| TSCB |      .tscb      |      False      |                                        |             |                    |
+| W??W |      .hkcl      |      False      |                                        | Switch/WiiU |      *Stuff?*      |
+| XLNK |     .belnk      |      True       |                                        |             |                    |
 
 ## AAMP
 
