@@ -51,7 +51,7 @@ namespace BotwModConverter.Core
 
         public static bool IsYaz0Compressed(ref byte[] data)
         {
-            if (Enumerable.SequenceEqual(data[0..4], "Yaz0"u8.ToArray())) {
+            if (data.Length > 4 && Enumerable.SequenceEqual(data[0..4], "Yaz0"u8.ToArray())) {
                 data = Yaz0.DecompressFast(data);
                 return true;
             }
