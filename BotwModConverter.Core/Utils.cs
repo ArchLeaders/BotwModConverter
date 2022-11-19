@@ -24,7 +24,7 @@ namespace BotwModConverter.Core
             }, new Converters.Aamp() },
             // Binary Archive Resource Stream
             { new string[] {
-                ".bfres", ".bitemico", ".bcamanim"
+                ".bcamanim", ".bfres", ".bitemico", ".bmapopen", ".bmaptex", ".breviewtex", ".bstftex"
             }, new Converters.Bfres() },
             // Binary Ecosystem (".beco")
             // Binary Format Event Flow (".bfevfl", ".bfevtm")
