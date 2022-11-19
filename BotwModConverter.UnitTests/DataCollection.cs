@@ -1,13 +1,10 @@
 ﻿using BotwModConverter.Core;
 using BotwModConverter.Core.Helpers;
-using Microsoft.VisualStudio.TestPlatform.Common.Interfaces;
 using Nintendo.Sarc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Nintendo.Yaz0;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BotwModConverter.UnitTests
 {
@@ -210,6 +207,79 @@ namespace BotwModConverter.UnitTests
             mdDoc.AppendLine($"#### Ignored File Extensions: \n- {string.Join("\n- ", skip.Order())}");
 
             File.WriteAllText("../../../test-data/BotwDataTypes.md", mdDoc.ToString());
+        }
+
+        [TestMethod]
+        [DataRow("../../../test-data/wiiu", "../../../../Data/wiiu.xxhash")]
+        [DataRow("../../../test-data/switch", "../../../../Data/switch.xxhash")]
+        public void Hash(string path, string output)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(output)!);
+            using FileStream fs = File.Create(output);
+            using BinaryWriter writer = new(fs);
+
+            static void ReadSarc(ref uint count, BinaryWriter writer, byte[] sarcData)
+            {
+                SarcFile sarc = new(sarcData);
+                foreach ((var name, var fileData) in sarc.Files) {
+                    byte[] data = fileData;
+                    bool isYaz0 = Utils.IsYaz0Compressed(ref data);
+                    if (data.Length > 4 && Enumerable.SequenceEqual(fileData[0..4], "SARC"u8.ToArray())) {
+                        ReadSarc(ref count, writer, fileData);
+                    }
+
+                    writer.Write(Standart.Hash.xxHash.xxHash3.ComputeHash(fileData, fileData.Length));
+                    count++;
+                }
+            }
+
+            // Reserve count offset
+            writer.Write(0U);
+            uint count = 0;
+
+            foreach (var file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)) {
+                byte[] data = File.ReadAllBytes(file);
+                bool isYaz0 = Utils.IsYaz0Compressed(ref data);
+                if (data.Length > 4 && Enumerable.SequenceEqual(data[0..4], "SARC"u8.ToArray())) {
+                    ReadSarc(ref count, writer, data);
+                }
+
+                writer.Write(Standart.Hash.xxHash.xxHash3.ComputeHash(data, data.Length));
+                count++;
+            }
+
+            writer.BaseStream.Position = 0;
+            writer.Write(count);
+            writer.Flush();
+            writer.Dispose();
+
+            File.WriteAllBytes(output, Yaz0.CompressFast(output));
+        }
+
+        [TestMethod]
+        [DataRow("../../../../Data/wiiu.xxhash")]
+        [DataRow("../../../../Data/switch.xxhash")]
+        public void BenchmarkHashSet(string path)
+        {
+            var watch = Stopwatch.StartNew();
+            byte[] data = Yaz0.DecompressFast(path);
+            watch.Stop();
+            Console.WriteLine($"Decompressed in: {watch.ElapsedMilliseconds}ms");
+
+            watch.Restart();
+
+            using MemoryStream fs = new(data);
+            using BinaryReader reader = new(fs);
+            HashSet<ulong> hashes = new();
+
+            uint count = reader.ReadUInt32();
+
+            for (int i = 0; i < count; i++) {
+                hashes.Add(reader.ReadUInt64());
+            }
+
+            watch.Stop();
+            Console.WriteLine($"Loaded hashes: {watch.ElapsedMilliseconds}ms");
         }
     }
 }
