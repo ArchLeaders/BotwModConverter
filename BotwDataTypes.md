@@ -2,27 +2,27 @@
 
 |Magic |    Extension    | Yaz0 Compressed |              Description               |   IO State  |  Conversion Info   |
 |:----:|:---------------:|:---------------:|----------------------------------------|:-----------:|--------------------|
-| AAMP |    .baiprog     |      False      |                                        | Switch/WiiU |      Endianess     |
+| AAMP |    .baiprog     |      False      |                                        | Switch/WiiU | Endianess          |
 | AGST |     .bagst      |      False      |                                        |             |                    |
 | BARS |      .bars      |      False      |                                        |             |                    |
-| BFEV |     .bfevfl     |      False      |                                        | Switch/WiiU |        None        |
+| BFEV |     .bfevfl     |      False      |                                        | Switch/WiiU | None               |
 | BLAL |      .blal      |      False      |                                        |             |                    |
-|  BY  |  .baischedule   |      False      |                                        | Switch/WiiU |      Endianess     |
+|  BY  |  .baischedule   |      False      |                                        | Switch/WiiU | Endianess          |
 | EFTB |    .esetlist    |      True       |                                        |             |                    |
 | FFNT |     .bffnt      |      False      |                                        |             |                    |
 | FLAN |     .bflan      |      False      |                                        |             |                    |
 | FLYT |     .bflyt      |      False      |                                        |             |                    |
-| FRES |    .bcamanim    |      False      |                                        |   > WiiU    |      *Stuff?*      |
+| FRES |    .bcamanim    |      False      |                                        |   > WiiU    | *Stuff?*           |
 | FSAR |     .bfsar      |      False      |                                        |             |                    |
 | FSHA |     .bfsha      |      True       |                                        |             |                    |
 | FSTM |     .bfstm      |      False      |                                        |             |                    |
 | Gfx2 |      .gsh       |      False      |                                        |             |                    |
 | PrOD |      .blwp      |      True       |                                        |             |                    |
-| RSTB |   .rsizetable   |      True       |                                        | Switch/WiiU |  Endianess & Data  |
-| SARC |    .baatarc     |      False      |                                        | Switch/WiiU |     Endianess?     |
+| RSTB |   .rsizetable   |      True       |                                        | Switch/WiiU | Endianess & Data   |
+| SARC |    .baatarc     |      False      |                                        | Switch/WiiU | Endianess?         |
 | STAT |    .agstats     |      False      |                                        |             |                    |
 | TSCB |      .tscb      |      False      |                                        |             |                    |
-| W??W |      .hkcl      |      False      |                                        | Switch/WiiU |      *Stuff?*      |
+| W??W |      .hkcl      |      False      |                                        | Switch/WiiU | *Stuff?*           |
 | XLNK |     .belnk      |      True       |                                        |             |                    |
 
 ## AAMP
