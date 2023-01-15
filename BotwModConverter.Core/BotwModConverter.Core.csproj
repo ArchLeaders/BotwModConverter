@@ -9,14 +9,9 @@
   <ItemGroup>
     <PackageReference Include="AampLibrary" Version="1.0.10" />
     <PackageReference Include="BymlLibrary" Version="1.1.4" />
-    <PackageReference Include="SarcLibrary" Version="1.0.6" />
-    <PackageReference Include="Yaz0Library" Version="1.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="C:\Users\ArchLeaders\.nuget\packages\yaz0library\1.0.5\contentFiles\any\net7.0\Lib\Yaz0.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <PackageReference Include="SarcLibrary" Version="2.0.2" />
+    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" />
+    <PackageReference Include="Yaz0Library" Version="1.1.4" />
   </ItemGroup>
 
 </Project>
