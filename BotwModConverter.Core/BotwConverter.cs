@@ -1,6 +1,4 @@
 ﻿using BotwModConverter.Core.Helpers;
-using Syroot.BinaryData;
-using System.Diagnostics;
 using Yaz0Library;
 
 namespace BotwModConverter.Core
@@ -21,34 +19,31 @@ namespace BotwModConverter.Core
             });
         }
 
-        public static Task ConvertFolder(string folder)
+        internal static Task ConvertFolder(string path)
         {
-            // this is stupid xD
-            return Parallel.ForEachAsync(new IEnumerable<string>[] { Directory.EnumerateDirectories(folder), Directory.EnumerateFiles(folder) },
-                async (paths, _) => await Parallel.ForEachAsync(paths, async (path, cancellationToken) => {
-                    if (Directory.Exists(path)) {
-                        await ConvertFolder(path);
-                    }
-                    else if (File.Exists(path)) {
-                        ConvertFile(path);
-                    }
-                    else {
-                        throw new Exception("Fatal Error: A file or folder was removed during the conversion process.");
-                    }
-                })
-            );
+            return Parallel.ForEachAsync(Directory.EnumerateFiles(path), (file, cancellationToken) => {
+                ConvertFile(file);
+                return new();
+            });
         }
 
-        public static void ConvertFile(string file)
+        internal static async Task ConvertFolderRecursively(string path)
         {
-            // unavoidable allocation
+            await ConvertFolder(path);
+            await Parallel.ForEachAsync(Directory.EnumerateDirectories(path), async (folder, cancellationToken) => {
+                await ConvertFolder(folder);
+            });
+        }
+
+        internal static void ConvertFile(string file)
+        {
             Span<byte> data = File.ReadAllBytes(file).AsSpan();
             string ext = Path.GetExtension(file);
             using FileStream fs = File.Create(file);
             fs.Write(ConvertData(data, ext, out Yaz0SafeHandle? _));
         }
 
-        public static Span<byte> ConvertData(Span<byte> data, string ext, out Yaz0SafeHandle? handle)
+        internal static Span<byte> ConvertData(Span<byte> data, string ext, out Yaz0SafeHandle? handle)
         {
             Span<byte> decompressed = Utils.DecompressYaz0(data, out bool isYaz0);
             Span<byte> converted = Utils.GetConverter(ext).ConvertToWiiu(decompressed);
