@@ -1,12 +1,7 @@
 ﻿using BotwModConverter.Core.Helpers;
-using Microsoft.VisualBasic.FileIO;
-using Nintendo.Yaz0;
-using System;
-using System.Collections.Generic;
+using Syroot.BinaryData;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Yaz0Library;
 
 namespace BotwModConverter.Core
 {
@@ -30,13 +25,14 @@ namespace BotwModConverter.Core
 
         public static Task ConvertFolder(string folder)
         {
+            // this is stupid xD
             return Parallel.ForEachAsync(new IEnumerable<string>[] { Directory.EnumerateDirectories(folder), Directory.EnumerateFiles(folder) },
-                async (paths, _) => await Parallel.ForEachAsync(paths, async (path, _) => {
+                async (paths, _) => await Parallel.ForEachAsync(paths, async (path, cancellationToken) => {
                     if (Directory.Exists(path)) {
                         await ConvertFolder(path);
                     }
                     else if (File.Exists(path)) {
-                        await ConvertFile(path);
+                        ConvertFile(path);
                     }
                     else {
                         throw new Exception("Fatal Error: A file or folder was removed during the conversion process.");
@@ -45,20 +41,24 @@ namespace BotwModConverter.Core
             );
         }
 
-        public static async Task ConvertFile(string file)
+        public static void ConvertFile(string file)
         {
-            byte[] data = File.ReadAllBytes(file);
+            // unavoidable allocation
+            Span<byte> data = File.ReadAllBytes(file).AsSpan();
             string ext = Path.GetExtension(file);
-            await File.WriteAllBytesAsync(file, await ConvertData(data, ext));
+            using FileStream fs = File.Create(file);
+            fs.Write(ConvertData(data, ext));
         }
 
-        public static async Task<byte[]> ConvertData(byte[] data, string ext)
+        public static Span<byte> ConvertData(Span<byte> data, string ext)
         {
+            // no reason to iterate when
+            // we have some form of key
             foreach ((var keys, var converter) in Utils.Converters) {
                 if (keys.Contains(ext)) {
-                    bool isYaz0 = Utils.IsYaz0Compressed(ref data);
-                    byte[] converted = await converter.ConvertToWiiu(data);
-                    return isYaz0 ? Yaz0.CompressFast(converted) : converted;
+                    Span<byte> decompressed = Utils.DecompressYaz0(data, out bool isYaz0);
+                    Span<byte> converted = converter.ConvertToWiiu(decompressed);
+                    return isYaz0 ? Yaz0.Compress(converted, out Yaz0SafeHandle handle) : converted;
                 }
             }
 
