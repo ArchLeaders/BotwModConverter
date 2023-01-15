@@ -11,17 +11,6 @@ namespace BotwModConverter.Core
     public static class Utils
     {
         public static Dictionary<string[], IBotwConverter> Converters { get; } = new() {
-            { new string[] {
-                ".bactcapt", ".baglblm", ".baglccr", ".baglclwd", ".baglcube", ".bagldof",
-                ".baglenv", ".baglenvset", ".baglfila", ".bagllmap", ".bagllref", ".baglmf", ".baglshpp",
-                ".baiprog", ".bas", ".baslist", ".bassetting", ".batcl", ".batcllist", ".bawareness", ".bawntable",
-                ".bbonectrl", ".bchemical", ".bchmres", ".bdemo", ".bdgnenv", ".bdmgparam", ".bdrop",
-                ".bgapkginfo", ".bgapkglist", ".bgenv", ".bglght", ".bgmsconf", ".bgparamlist", ".bgsdw",
-                ".bksky", ".blifecondition", ".blod", ".bmodellist", ".bmscdef", ".bmscinfo", ".bnetfp",
-                ".bphyscharcon", ".bphyscontact", ".bphysics", ".bphyslayer", ".bphysmaterial", ".bphyssb", ".bphyssubmat",
-                ".bptclconf", ".brecipe", ".brgbw", ".brgcon", ".brgconfig", ".brgconfiglist", ".bsfbt",
-                ".bsft", ".bshop", ".bumii", ".bvege", ".bxml",
-            }, new Converters.Aamp() },
             // Binary Archive Resource Stream
             { new string[] {
                 ".bcamanim", ".bfres", ".bitemico", ".bmapopen", ".bmaptex", ".breviewtex", ".bstftex"
