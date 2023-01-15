@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data\switch.xxhash" />
+    <EmbeddedResource Include="Data\wiiu.xxhash" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AampLibrary" Version="1.0.10" />
     <PackageReference Include="BymlLibrary" Version="1.1.4" />
     <PackageReference Include="SarcLibrary" Version="2.0.2" />

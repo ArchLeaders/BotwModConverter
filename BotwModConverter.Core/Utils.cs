@@ -1,15 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using Standart.Hash.xxHash;
+using System.Buffers.Binary;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Yaz0Library;
 
 namespace BotwModConverter.Core
 {
+    public enum BotwPlatform { Switch, Wiiu }
+
     public static class Utils
     {
+        private static BotwPlatform _platform;
+        private static HashSet<ulong>? _hashes;
+
+        private static HashSet<ulong> GetHashes(BotwPlatform platform)
+        {
+            if (_hashes == null || platform != _platform) {
+                string file = $"{nameof(Core)}.Data.{platform}.xxhash";
+                using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file)!;
+                _hashes = new((int)stream.Length / 8);
+
+                Span<byte> buffer = stackalloc byte[8];
+                for (int i = 0; i < stream.Length / 8; i++) {
+                    stream.Read(buffer);
+                    _hashes.Add(BinaryPrimitives.ReadUInt64LittleEndian(buffer));
+                }
+            }
+
+            _platform = platform;
+            return _hashes;
+        }
+
         public static Dictionary<string[], IBotwConverter> Converters { get; } = new() {
             // Binary Archive Resource Stream
             { new string[] {
@@ -47,6 +68,11 @@ namespace BotwModConverter.Core
 
             isYaz0 = false;
             return data;
+        }
+
+        public static bool IsModded(ReadOnlySpan<byte> data, BotwPlatform platform)
+        {
+            return !GetHashes(platform).Contains(xxHash3.ComputeHash(data, data.Length));
         }
     }
 }
