@@ -5,8 +5,6 @@ using Yaz0Library;
 
 namespace BotwModConverter.Core
 {
-    public enum BotwPlatform { Switch, Wiiu }
-
     public class BotwConverter
     {
         public static Task Convert(string mod, bool createBackup = true)
@@ -47,23 +45,21 @@ namespace BotwModConverter.Core
             Span<byte> data = File.ReadAllBytes(file).AsSpan();
             string ext = Path.GetExtension(file);
             using FileStream fs = File.Create(file);
-            fs.Write(ConvertData(data, ext));
+            fs.Write(ConvertData(data, ext, out Yaz0SafeHandle? _));
         }
 
-        public static Span<byte> ConvertData(Span<byte> data, string ext)
+        public static Span<byte> ConvertData(Span<byte> data, string ext, out Yaz0SafeHandle? handle)
         {
-            // no reason to iterate when
-            // we have some form of key
-            foreach ((var keys, var converter) in Utils.Converters) {
-                if (keys.Contains(ext)) {
-                    Span<byte> decompressed = Utils.DecompressYaz0(data, out bool isYaz0);
-                    Span<byte> converted = converter.ConvertToWiiu(decompressed);
-                    return isYaz0 ? Yaz0.Compress(converted, out Yaz0SafeHandle handle) : converted;
-                }
-            }
+            Span<byte> decompressed = Utils.DecompressYaz0(data, out bool isYaz0);
+            Span<byte> converted = Utils.GetConverter(ext).ConvertToWiiu(decompressed);
 
-            _ = Task.Run(() => Debug.WriteLine($"The file extension '{ext}' is not yet supported by the converter."));
-            return data;
+            if (isYaz0) {
+                return Yaz0.Compress(converted, out handle);
+            }
+            else {
+                handle = null;
+                return converted;
+            }
         }
     }
 }

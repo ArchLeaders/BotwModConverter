@@ -2,12 +2,14 @@
 {
     public class Bfres : IBotwConverter
     {
-        public Task<byte[]> ConvertToSwitch(byte[] data)
+        public static Bfres Shared { get; } = new();
+
+        public Span<byte> ConvertToSwitch(ReadOnlySpan<byte> data)
         {
             throw new NotImplementedException();
         }
 
-        public Task<byte[]> ConvertToWiiu(byte[] data)
+        public Span<byte> ConvertToWiiu(ReadOnlySpan<byte> data)
         {
             throw new NotImplementedException();
         }

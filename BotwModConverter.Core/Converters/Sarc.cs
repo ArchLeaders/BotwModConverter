@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BotwModConverter.Core.Converters
+﻿namespace BotwModConverter.Core.Converters
 {
     public class Sarc : IBotwConverter
     {
-        public Task<byte[]> ConvertToSwitch(byte[] data)
+        public static Sarc Shared { get; } = new();
+
+        public Span<byte> ConvertToSwitch(ReadOnlySpan<byte> data)
         {
             throw new NotImplementedException();
         }
 
-        public Task<byte[]> ConvertToWiiu(byte[] data)
+        public Span<byte> ConvertToWiiu(ReadOnlySpan<byte> data)
         {
             throw new NotImplementedException();
         }
