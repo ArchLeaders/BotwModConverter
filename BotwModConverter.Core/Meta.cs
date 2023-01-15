@@ -30,6 +30,5 @@
         public static string[] SoundExt { get; } = new string[] {
             ".bfstm", ".bfstp", ".bfwav", ".bars"
         };
-
     }
 }

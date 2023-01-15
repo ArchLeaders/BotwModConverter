@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BotwModConverter.Core.Converters
+﻿namespace BotwModConverter.Core.Converters
 {
     public class Bfres : IBotwConverter
     {
