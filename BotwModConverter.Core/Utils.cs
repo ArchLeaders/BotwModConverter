@@ -1,10 +1,10 @@
-﻿using Nintendo.Yaz0;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Yaz0Library;
 
 namespace BotwModConverter.Core
 {
@@ -38,66 +38,15 @@ namespace BotwModConverter.Core
             // Water Layout ("water.extm")
         };
 
-        public static bool IsYaz0Compressed(ref byte[] data)
+        public static Span<byte> DecompressYaz0(Span<byte> data, out bool isYaz0)
         {
-            if (data.Length > 4 && Enumerable.SequenceEqual(data[0..4], "Yaz0"u8.ToArray())) {
-                data = Yaz0.DecompressFast(data);
-                return true;
+            if (data.Length > 4 && data[0..4].SequenceEqual("Yaz0"u8)) {
+                isYaz0 = true;
+                return Yaz0.Decompress(data);
             }
-            else {
-                return false;
-            }
-        }
 
-        public static byte[] UnYaz(this byte[] raw) => UnYazReport(raw).Value;
-        public static byte[] UnYaz(this byte[] raw, out bool wasDecompressed)
-        {
-            var yazInfo = UnYazReport(raw);
-            wasDecompressed = yazInfo.Key;
-            return yazInfo.Value;
-        }
-
-        public static KeyValuePair<bool, byte[]> UnYazReport(this byte[] raw)
-        {
-            if (Encoding.UTF8.GetString(raw[0..3]) == "Yaz0") {
-                try {
-                    return new(true, Yaz0.DecompressFast(raw));
-                }
-                catch {
-                    return new(true, Yaz0.Decompress(raw));
-                }
-            }
-            else {
-                return new(false, raw);
-            }
-        }
-
-        public static byte[] Yaz(this byte[] raw)
-        {
-            try {
-                return Yaz0.DecompressFast(raw);
-            }
-            catch {
-                return Yaz0.Decompress(raw);
-            }
-        }
-
-        public static bool IsFileModded(string name, byte[] bytes, bool allowNew = true)
-        {
-            //var table = Bcml.Utils.GetHashTable();
-
-            //if (!table.ContainsKey(name)) {
-            //    return allowNew;
-            //}
-
-            //return !table[name].Contains(xxHash64.ComputeHash(UnYaz(bytes)));
-
-            throw new NotImplementedException();
-        }
-
-        public static byte[] GetStockBfstp(string name, string barsFile)
-        {
-            throw new NotImplementedException();
+            isYaz0 = false;
+            return data;
         }
     }
 }
