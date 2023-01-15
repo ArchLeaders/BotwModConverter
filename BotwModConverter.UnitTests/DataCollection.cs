@@ -27,13 +27,13 @@ namespace BotwModConverter.UnitTests
                 string path = Path.GetRelativePath(gamePath, file).ToCommonPath();
                 string ext = Path.GetExtension(file);
 
-                byte[] data = File.ReadAllBytes(file);
+                Span<byte> data = File.ReadAllBytes(file).AsSpan();
 
                 if (data.Length < 4) {
                     continue;
                 }
 
-                bool isYaz0 = Utils.IsYaz0Compressed(ref data);
+                data = Utils.DecompressYaz0(data, out bool isYaz0);
                 string magic = Encoding.UTF8.GetString(data[0..4]);
 
                 if (isYaz0) {
@@ -47,13 +47,13 @@ namespace BotwModConverter.UnitTests
                 entries[magic].Add(new(path, ext, isYaz0));
 
                 if (magic == "SARC") {
-                    SarcFile sarc = new(data);
+                    SarcFile sarc = new(data.ToArray()); // really sarc lib?
                     foreach ((var name, var fileData) in sarc.Files) {
                         ext = Path.GetExtension(name);
                         string subPath = $"{path}//{name}";
 
-                        byte[] _instanceData = fileData;
-                        isYaz0 = Utils.IsYaz0Compressed(ref _instanceData);
+                        Span<byte> _instanceData = fileData.AsSpan();
+                        _instanceData = Utils.DecompressYaz0(_instanceData, out isYaz0);
                         magic = Encoding.UTF8.GetString(_instanceData[0..4]);
 
                         if (isYaz0) {
@@ -218,12 +218,12 @@ namespace BotwModConverter.UnitTests
             using FileStream fs = File.Create(output);
             using BinaryWriter writer = new(fs);
 
-            static void ReadSarc(ref uint count, BinaryWriter writer, byte[] sarcData)
+            static void ReadSarc(ref uint count, BinaryWriter writer, Span<byte> sarcData)
             {
-                SarcFile sarc = new(sarcData);
+                SarcFile sarc = new(sarcData.ToArray()); // really sarc lib?
                 foreach ((var name, var fileData) in sarc.Files) {
-                    byte[] data = fileData;
-                    bool isYaz0 = Utils.IsYaz0Compressed(ref data);
+                    Span<byte> data = fileData.AsSpan();
+                    data = Utils.DecompressYaz0(data, out bool isYaz0);
                     if (data.Length > 4 && Enumerable.SequenceEqual(fileData[0..4], "SARC"u8.ToArray())) {
                         ReadSarc(ref count, writer, fileData);
                     }
@@ -238,9 +238,9 @@ namespace BotwModConverter.UnitTests
             uint count = 0;
 
             foreach (var file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)) {
-                byte[] data = File.ReadAllBytes(file);
-                bool isYaz0 = Utils.IsYaz0Compressed(ref data);
-                if (data.Length > 4 && Enumerable.SequenceEqual(data[0..4], "SARC"u8.ToArray())) {
+                Span<byte> data = File.ReadAllBytes(file).AsSpan();
+                data = Utils.DecompressYaz0(data, out bool isYaz0);
+                if (data.Length > 4 && data[0..4].SequenceEqual("SARC"u8)) {
                     ReadSarc(ref count, writer, data);
                 }
 
@@ -270,12 +270,12 @@ namespace BotwModConverter.UnitTests
 
             using MemoryStream fs = new(data);
             using BinaryReader reader = new(fs);
-            HashSet<ulong> hashes = new();
+            Span<ulong> hashes = new ulong[(int)(fs.Length / 8)];
 
             uint count = reader.ReadUInt32();
 
             for (int i = 0; i < count; i++) {
-                hashes.Add(reader.ReadUInt64());
+                hashes[i] = reader.ReadUInt64();
             }
 
             watch.Stop();
