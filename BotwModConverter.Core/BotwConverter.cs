@@ -32,10 +32,12 @@ public class BotwConverter
 
     internal static void ConvertFile(string file)
     {
-        Span<byte> data = File.ReadAllBytes(file).AsSpan();
-        string ext = Path.GetExtension(file);
-        using FileStream fs = File.Create(file);
-        fs.Write(ConvertData(data, ext, out Yaz0SafeHandle? _));
+        using FileStream src = File.OpenRead(file);
+        Span<byte> data = src.Length < 0x100000 ? stackalloc byte[(int)src.Length] : new byte[src.Length];
+        src.Read(data);
+
+        using FileStream fs = File.Create(file, data.Length);
+        fs.Write(ConvertData(data, Path.GetExtension(file), out Yaz0SafeHandle? _));
     }
 
     internal static Span<byte> ConvertData(Span<byte> data, string ext, out Yaz0SafeHandle? handle)
