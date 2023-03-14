@@ -1,8 +1,8 @@
 ﻿namespace BotwModConverter.Core.Converters;
 
-public class Bfres : IBotwConverter
+public class Bars : IBotwConverter
 {
-    public static Bfres Shared { get; } = new();
+    public static Bars Shared { get; } = new();
 
     public Span<byte> ConvertToSwitch(ReadOnlySpan<byte> data)
     {

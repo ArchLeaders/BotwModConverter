@@ -1,17 +1,16 @@
-﻿namespace BotwModConverter.Core.Converters
+﻿namespace BotwModConverter.Core.Converters;
+
+public class Sarc : IBotwConverter
 {
-    public class Sarc : IBotwConverter
+    public static Sarc Shared { get; } = new();
+
+    public Span<byte> ConvertToSwitch(ReadOnlySpan<byte> data)
     {
-        public static Sarc Shared { get; } = new();
+        throw new NotImplementedException();
+    }
 
-        public Span<byte> ConvertToSwitch(ReadOnlySpan<byte> data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Span<byte> ConvertToWiiu(ReadOnlySpan<byte> data)
-        {
-            throw new NotImplementedException();
-        }
+    public Span<byte> ConvertToWiiu(ReadOnlySpan<byte> data)
+    {
+        throw new NotImplementedException();
     }
 }

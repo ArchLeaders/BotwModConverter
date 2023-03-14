@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace BotwModConverter.Core.LegacyConverters;
 
-namespace BotwModConverter.Core.LegacyConverters
+public class BFSTM
 {
-    public class BFSTM
+    public static async Task<byte[]> Convert(byte[] data)
     {
-        public static async Task<byte[]> Convert(byte[] data)
-        {
-            return new byte[0];
-        }
+        return new byte[0];
     }
 }
