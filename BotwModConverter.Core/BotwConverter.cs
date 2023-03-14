@@ -4,7 +4,7 @@ namespace BotwModConverter.Core;
 
 public class BotwConverter
 {
-    public static Task Convert(string mod, bool createBackup = true)
+    public static Task Convert(string mod)
     {
         return Parallel.ForEachAsync(new string[] { "aoc", "content" }, async (folderName, _) => {
             string folder = Path.Combine(mod, folderName);
@@ -30,13 +30,13 @@ public class BotwConverter
         });
     }
 
-    internal static void ConvertFile(string file)
+    internal static void ConvertFile(string file, string output)
     {
         using FileStream src = File.OpenRead(file);
         Span<byte> data = src.Length < 0x100000 ? stackalloc byte[(int)src.Length] : new byte[src.Length];
         src.Read(data);
 
-        using FileStream fs = File.Create(file, data.Length);
+        using FileStream fs = File.Create(output, data.Length);
         fs.Write(ConvertData(data, Path.GetExtension(file), out Yaz0SafeHandle? _));
     }
 
