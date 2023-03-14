@@ -34,7 +34,7 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: Publish Botw Mod Converter
-        run: dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj -r ${{ matrix.platform.runtime }} --configuration Release -p:Version=${{ github.event.release.tag_name }} --output ${{ matrix.platform.name }} --sc false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj -r ${{ matrix.platform.runtime }} --configuration Release -p:Version=${{ github.sha }} --output ${{ matrix.platform.name }} --sc false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
       - uses: actions/upload-artifact@v3
         name: Upload artifacts
