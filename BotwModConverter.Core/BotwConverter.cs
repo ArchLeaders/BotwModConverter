@@ -66,7 +66,7 @@ public class BotwConverter
         async Task Process(string folder)
         {
             string output = Path.Combine(outputRoot, Path.GetFileName(folder));
-            await ConvertFiles(folder, output);
+            await ConvertFolder(folder, output);
         }
     }
 
