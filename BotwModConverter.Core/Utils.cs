@@ -55,9 +55,9 @@ public static class Utils
             "bmapopen" or "bmaptex" or "breviewtex" or
             "bstftex" => Converters.Bfres.Shared,
 
-            // Binary Ecosystem (".beco")
-            // Binary Format Event Flow (".bfevfl" or ".bfevtm")
-            // Binary Loop Asset List (".blal")
+            // Binary Ecosystem ("beco")
+            // Binary Loop Asset List ("blal")
+            // BFEV, BFSTM, Sound, etc ("bfstm" or "bsftp")
 
             "baischedule" or "baniminfo" or "bgdata" or
             "bgsvdata" or "bquestpack" or "byml" or
