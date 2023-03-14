@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BotwModConverter.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\Bin\\Mods\\Test"
+    }
+  }
+}

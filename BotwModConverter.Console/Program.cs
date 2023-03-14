@@ -1,2 +1,3 @@
-﻿Console.WriteLine("Hello World");
-Console.ReadLine();
+﻿using BotwModConverter.Core;
+
+BotwConverter.Convert(args[0]);
