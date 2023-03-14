@@ -103,6 +103,8 @@ public class BotwConverter
         using FileStream fs = File.Create(output, data.Length);
         fs.Write(ConvertData(data, Path.GetExtension(file), out Yaz0SafeHandle? _));
 
+        // This should write to a custom logger instead
+        Console.WriteLine($"{file} >> {output} : {data.Length}");
         return Task.CompletedTask;
     }
 
