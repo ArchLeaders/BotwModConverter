@@ -39,5 +39,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         name: Upload artifacts
         with:
-          name: ${{ env.proj }}-${{ github.sha }}${{ matrix.platform.ext }}
+          name: ${{ env.proj }}${{ matrix.platform.ext }}
           path: ${{ matrix.platform.name }}/${{ env.proj }}${{ matrix.platform.ext }}
