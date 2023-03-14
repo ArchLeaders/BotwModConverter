@@ -1,36 +1,100 @@
-﻿using Yaz0Library;
+﻿using System.Runtime.CompilerServices;
+using Yaz0Library;
 
 namespace BotwModConverter.Core;
 
+public enum ThreadMode { Single, Parallel }
+
 public class BotwConverter
 {
-    public static Task Convert(string mod)
+    private readonly BotwMod _mod;
+    private readonly bool _parallel;
+    private int _counter = 0;
+
+    private BotwConverter(BotwMod mod, ThreadMode mode)
     {
-        return Parallel.ForEachAsync(new string[] { "aoc", "content" }, async (folderName, _) => {
-            string folder = Path.Combine(mod, folderName);
-            if (Directory.Exists(folder)) {
-                await ConvertFolder(folder);
+        _mod = mod;
+        _parallel = mode == ThreadMode.Parallel;
+    }
+
+    public static async Task<int> ConvertMod(BotwMod mod, string outputRoot, ThreadMode threadMode = ThreadMode.Parallel)
+    {
+        BotwConverter converter = new(mod, threadMode);
+        await converter.ConvertRoot(outputRoot);
+        return converter._counter;
+    }
+
+    public async Task ConvertRoot(string outputRoot)
+    {
+        IEnumerable<string?> modFolders = _mod.GetModFolders();
+        if (_parallel) {
+            await Parallel.ForEachAsync(modFolders, async (folderName, _) => {
+                await Process(folderName!);
+            });
+        }
+        else {
+            foreach (var folderName in modFolders) {
+                await Process(folderName!);
             }
-        });
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        async Task Process(string folderName)
+        {
+            string folder = Path.Combine(_mod.Root, folderName);
+            string output = Path.Combine(outputRoot, folderName);
+            await ConvertFolder(folder, output);
+        }
     }
 
-    internal static Task ConvertFolder(string path)
+    private async Task ConvertFolder(string path, string outputRoot)
     {
-        return Parallel.ForEachAsync(Directory.EnumerateFiles(path), (file, cancellationToken) => {
-            ConvertFile(file);
-            return new();
-        });
+        await ConvertFiles(path, outputRoot);
+        IEnumerable<string> dirs = Directory.EnumerateDirectories(path);
+        if (_parallel) {
+            await Parallel.ForEachAsync(dirs, async (folder, cancellationToken) => {
+                await Process(folder);
+            });
+        }
+        else {
+            foreach (var folder in dirs) {
+                await Process(folder);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        async Task Process(string folder)
+        {
+            string output = Path.Combine(outputRoot, Path.GetFileName(folder));
+            await ConvertFiles(folder, output);
+        }
     }
 
-    internal static async Task ConvertFolderRecursively(string path)
+    private async Task ConvertFiles(string path, string outputRoot)
     {
-        await ConvertFolder(path);
-        await Parallel.ForEachAsync(Directory.EnumerateDirectories(path), async (folder, cancellationToken) => {
-            await ConvertFolder(folder);
-        });
+        Directory.CreateDirectory(outputRoot);
+        IEnumerable<string> files = Directory.EnumerateFiles(path);
+        if (_parallel) {
+            await Parallel.ForEachAsync(files, async (file, cancellationToken) => {
+                await Process(file);
+            });
+        }
+        else {
+            foreach (var file in files) {
+                await Process(file);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        async Task Process(string file)
+        {
+            string output = Path.Combine(outputRoot, Path.GetFileName(file));
+            await ConvertFile(file, output);
+            _counter++;
+        }
     }
 
-    internal static void ConvertFile(string file, string output)
+    internal static Task ConvertFile(string file, string output)
     {
         using FileStream src = File.OpenRead(file);
         Span<byte> data = src.Length < 0x100000 ? stackalloc byte[(int)src.Length] : new byte[src.Length];
@@ -38,6 +102,8 @@ public class BotwConverter
 
         using FileStream fs = File.Create(output, data.Length);
         fs.Write(ConvertData(data, Path.GetExtension(file), out Yaz0SafeHandle? _));
+
+        return Task.CompletedTask;
     }
 
     internal static Span<byte> ConvertData(Span<byte> data, string ext, out Yaz0SafeHandle? handle)
