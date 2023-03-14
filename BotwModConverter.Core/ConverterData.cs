@@ -1,6 +1,6 @@
 ﻿namespace BotwModConverter.Core;
 
-public static class Meta
+public static class ConverterData
 {
     public static string[] UnSupported { get; } = new string[] {
         ".bcamanim", ".sbcamanim", ".sesetlist", ".sbfarc",
