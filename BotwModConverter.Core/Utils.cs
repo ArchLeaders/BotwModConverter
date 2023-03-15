@@ -46,8 +46,9 @@ public static class Utils
         return !GetHashes(platform).Contains(xxHash3.ComputeHash(data, data.Length));
     }
 
-    public static IBotwConverter GetConverter(string ext)
+    public static IDataConverter GetConverter(string path, bool isYaz0)
     {
+        string ext = Path.GetExtension(path).Remove(0, isYaz0 ? 2 : 1);
         return ext switch {
             "bars" => Converters.Bars.Shared,
 
@@ -83,7 +84,7 @@ public static class Utils
             // Terrain Scene Binary (".tscb")
             // Water Layout ("water.extm")
 
-            _ => throw new NotSupportedException(),
+            _ => throw new NotSupportedException($"Could not find a converter for the file '{path}'"),
         };
     }
 }
