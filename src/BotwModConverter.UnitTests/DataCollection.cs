@@ -30,7 +30,7 @@ public class DataCollection
                 continue;
             }
 
-            data = Utils.DecompressYaz0(data, out bool isYaz0);
+            data = Utils.Decompress(data, out bool isYaz0);
             string magic = Encoding.UTF8.GetString(data[0..4]);
 
             if (isYaz0) {
@@ -50,7 +50,7 @@ public class DataCollection
                     string subPath = $"{path}//{name}";
 
                     Span<byte> _instanceData = fileData.AsSpan();
-                    _instanceData = Utils.DecompressYaz0(_instanceData, out isYaz0);
+                    _instanceData = Utils.Decompress(_instanceData, out isYaz0);
                     magic = Encoding.UTF8.GetString(_instanceData[0..4]);
 
                     if (isYaz0) {
@@ -220,7 +220,7 @@ public class DataCollection
             SarcFile sarc = new(sarcData.ToArray()); // really sarc lib?
             foreach ((var name, var fileData) in sarc.Files) {
                 Span<byte> data = fileData.AsSpan();
-                data = Utils.DecompressYaz0(data, out bool isYaz0);
+                data = Utils.Decompress(data, out bool isYaz0);
                 if (data.Length > 4 && Enumerable.SequenceEqual(fileData[0..4], "SARC"u8.ToArray())) {
                     ReadSarc(ref count, writer, fileData);
                 }
@@ -236,7 +236,7 @@ public class DataCollection
 
         foreach (var file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)) {
             Span<byte> data = File.ReadAllBytes(file).AsSpan();
-            data = Utils.DecompressYaz0(data, out bool isYaz0);
+            data = Utils.Decompress(data, out bool isYaz0);
             if (data.Length > 4 && data[0..4].SequenceEqual("SARC"u8)) {
                 ReadSarc(ref count, writer, data);
             }
