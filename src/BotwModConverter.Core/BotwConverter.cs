@@ -110,8 +110,9 @@ public class BotwConverter
         if (converted != null) {
             using FileStream fs = File.Create(output, data.Length);
             fs.Write(converted);
-            handle?.Dispose();
         }
+
+            handle?.Dispose();
 
         // This should write to a custom logger instead
         Console.WriteLine($"{file} >> {output} : {data.Length}");
