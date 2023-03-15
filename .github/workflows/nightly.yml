@@ -28,6 +28,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
+        with:
+          submodules: recursive
+
+      - name: Setup CMAKE
+        uses: jwlawson/actions-setup-cmake@v1.13.1
+
+      - name: Setup MinGW
+        uses: egor-tensin/setup-mingw@v2
+        id: mingw
+        with:
+          platform: x64
+
+      - name: Configure Cead (CMAKE)
+        run: cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_C_COMPILER:FILEPATH=${{ mingw.gcc }} -DCMAKE_CXX_COMPILER:FILEPATH=${{ mingw.gxx }} -S./lib/native -B./lib/native/build -G "MinGW Makefiles"
+
+      - name: Build Cead
+        run: cmake --build ./lib/native/build --config Release --target all -j 18
+
       - name: Install DotNET
         uses: actions/setup-dotnet@v3
         with:
