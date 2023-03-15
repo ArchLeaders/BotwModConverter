@@ -78,7 +78,7 @@ public static class Utils
             "hktm" => Converters.Havok.Shared,
 
             // MATE (".mate") ???
-            // Message Studio Binary Text (".msbt")
+            "msbt" => Converters.Msbt.Shared,
             // ResourceSizeTable (".rstb")
 
             "bactorpack" or "beventpack" or "bgenv" or
