@@ -48,6 +48,11 @@ public static class Utils
 
     public static IDataConverter GetConverter(string path, bool isYaz0)
     {
+        // Custom converter for the actorinfo
+        if (Path.GetFileName(path) == "ActorInfo.product.sbyml") {
+            return Converters.ActorInfo.Shared;
+        }
+
         string ext = Path.GetExtension(path).Remove(0, isYaz0 ? 2 : 1);
         return ext switch {
             "bars" => Converters.Bars.Shared,
