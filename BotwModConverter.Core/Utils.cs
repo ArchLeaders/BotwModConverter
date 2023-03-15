@@ -30,7 +30,7 @@ public static class Utils
         return _hashes[platform]!;
     }
 
-    public static Span<byte> DecompressYaz0(Span<byte> data, out bool isYaz0)
+    public static ReadOnlySpan<byte> Decompress(Span<byte> data, out bool isYaz0)
     {
         if (data.Length > 4 && data[0..4].SequenceEqual("Yaz0"u8)) {
             isYaz0 = true;

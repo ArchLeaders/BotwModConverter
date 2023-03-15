@@ -109,10 +109,12 @@ public class BotwConverter
         return Task.CompletedTask;
     }
 
-    internal static Span<byte> ConvertData(Span<byte> data, string ext, out Yaz0SafeHandle? handle)
+    internal static Span<byte> ConvertData(Span<byte> data, string path, out Yaz0SafeHandle? handle)
     {
-        Span<byte> decompressed = Utils.DecompressYaz0(data, out bool isYaz0);
-        Span<byte> converted = Utils.GetConverter(ext).ConvertToWiiu(decompressed);
+        ReadOnlySpan<byte> raw = Utils.Decompress(data, out bool isYaz0);
+        IDataConverter converter = Utils.GetConverter(path, isYaz0);
+
+        Span<byte> converted = converter.ConvertToWiiu(raw);
 
         if (isYaz0) {
             return Yaz0.Compress(converted, out handle);
