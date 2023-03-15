@@ -41,7 +41,7 @@ jobs:
           platform: x64
 
       - name: Configure Cead (CMAKE)
-        run: cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_C_COMPILER:FILEPATH=${{ mingw.gcc }} -DCMAKE_CXX_COMPILER:FILEPATH=${{ mingw.gxx }} -S./lib/native -B./lib/native/build -G "MinGW Makefiles"
+        run: cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_C_COMPILER:FILEPATH=${{ steps.mingw.gcc }} -DCMAKE_CXX_COMPILER:FILEPATH=${{ steps.mingw.gxx }} -S./lib/native -B./lib/native/build -G "MinGW Makefiles"
 
       - name: Build Cead
         run: cmake --build ./lib/native/build --config Release --target all -j 18
