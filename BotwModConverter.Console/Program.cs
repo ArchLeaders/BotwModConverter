@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 Stopwatch watch = Stopwatch.StartNew();
 
-int count = await BotwConverter.ConvertMod(args[0], args[1]);
+int count = await BotwConverter.ConvertMod(args[0], args[1], ThreadMode.Single);
 
 watch.Stop();
 Console.WriteLine($"Processed {count} files");
