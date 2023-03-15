@@ -112,10 +112,10 @@ public class BotwConverter
             fs.Write(converted);
         }
 
-            handle?.Dispose();
+        handle?.Dispose();
 
         // This should write to a custom logger instead
-        Console.WriteLine($"{file} >> {output} : {data.Length}");
+        ConverterLog.WriteLine($"{file} >> {output} : {data.Length}");
         return Task.CompletedTask;
     }
 
