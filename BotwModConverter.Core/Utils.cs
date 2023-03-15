@@ -83,8 +83,12 @@ public static class Utils
 
             "bactorpack" or "beventpack" or "bgenv" or
             "blarc" or "bmodelsh" or "genvb" or
-            "pack" or "sarc" or "stats" or
+            "sarc" or "stats" or
             "stera" => Converters.Sarc.Shared,
+
+            // Pack files need to be staged in order
+            // to properly converter Tex1/Tex2 files
+            "pack" => Converters.SarcStaged.Shared,
 
             // Terrain Scene Binary (".tscb")
             // Water Layout ("water.extm")

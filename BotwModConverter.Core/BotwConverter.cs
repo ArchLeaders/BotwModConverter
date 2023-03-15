@@ -100,9 +100,15 @@ public class BotwConverter
         Span<byte> data = src.Length < 0x100000 ? stackalloc byte[(int)src.Length] : new byte[src.Length];
         src.Read(data);
 
-        using FileStream fs = File.Create(output, data.Length);
-        fs.Write(ConvertData(data, file, out Yaz0SafeHandle? handle));
-        handle?.Dispose();
+        ReadOnlySpan<byte> converted = ConvertData(data, file, out Yaz0SafeHandle? handle);
+
+        // Some converters (namely BFRES) return a NULL
+        // value to indicate that the file should not be written
+        if (converted != null) {
+            using FileStream fs = File.Create(output, data.Length);
+            fs.Write(converted);
+            handle?.Dispose();
+        }
 
         // This should write to a custom logger instead
         Console.WriteLine($"{file} >> {output} : {data.Length}");
