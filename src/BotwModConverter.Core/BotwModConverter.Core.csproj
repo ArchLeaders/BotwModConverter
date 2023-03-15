@@ -19,4 +19,8 @@
     <PackageReference Include="Yaz0Library" Version="1.1.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\Cead\src\Cead.csproj" />
+  </ItemGroup>
+
 </Project>

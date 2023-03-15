@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Cead.Interop;
+using System.Runtime.CompilerServices;
 using Yaz0Library;
 
 namespace BotwModConverter.Core;
@@ -13,6 +14,8 @@ public class BotwConverter
 
     private BotwConverter(BotwMod mod, ThreadMode mode)
     {
+        DllManager.LoadCead();
+
         _mod = mod;
         _parallel = mode == ThreadMode.Parallel;
     }
