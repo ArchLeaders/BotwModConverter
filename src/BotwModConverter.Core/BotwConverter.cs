@@ -1,6 +1,6 @@
-﻿using Cead.Interop;
+﻿using Cead;
+using Cead.Interop;
 using System.Runtime.CompilerServices;
-using Yaz0Library;
 
 namespace BotwModConverter.Core;
 
@@ -103,7 +103,7 @@ public class BotwConverter
         Span<byte> data = src.Length < 0x100000 ? stackalloc byte[(int)src.Length] : new byte[src.Length];
         src.Read(data);
 
-        ReadOnlySpan<byte> converted = ConvertData(data, file, out Yaz0SafeHandle? handle);
+        ReadOnlySpan<byte> converted = ConvertData(data, file, out PtrHandle? handle);
 
         // Some converters (namely BFRES) return a NULL
         // value to indicate that the file should not be written
@@ -118,7 +118,7 @@ public class BotwConverter
         return Task.CompletedTask;
     }
 
-    internal static Span<byte> ConvertData(Span<byte> data, string path, out Yaz0SafeHandle? handle)
+    internal static Span<byte> ConvertData(Span<byte> data, string path, out PtrHandle? handle)
     {
         ReadOnlySpan<byte> raw = Utils.Decompress(data, out bool isYaz0);
         IDataConverter converter = Utils.GetConverter(path, isYaz0);

@@ -13,10 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="AampLibrary" Version="1.0.10" />
-    <PackageReference Include="BymlLibrary" Version="1.1.4" />
-    <PackageReference Include="SarcLibrary" Version="2.0.2" />
     <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" />
-    <PackageReference Include="Yaz0Library" Version="1.1.4" />
   </ItemGroup>
 
   <ItemGroup>
