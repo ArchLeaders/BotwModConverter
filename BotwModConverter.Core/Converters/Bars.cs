@@ -1,6 +1,6 @@
 ﻿namespace BotwModConverter.Core.Converters;
 
-public class Bars : IBotwConverter
+public class Bars : IDataConverter
 {
     public static Bars Shared { get; } = new();
 

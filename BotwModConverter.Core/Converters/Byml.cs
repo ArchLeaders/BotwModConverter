@@ -1,6 +1,6 @@
 ﻿namespace BotwModConverter.Core.Converters;
 
-public class Byml : IBotwConverter
+public class Byml : IDataConverter
 {
     public static Byml Shared { get; } = new();
 

@@ -1,6 +1,6 @@
 ﻿namespace BotwModConverter.Core.Converters;
 
-public class Sarc : IBotwConverter
+public class Sarc : IDataConverter
 {
     public static Sarc Shared { get; } = new();
 

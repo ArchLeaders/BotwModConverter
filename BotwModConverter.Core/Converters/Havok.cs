@@ -1,6 +1,6 @@
 ﻿namespace BotwModConverter.Core.Converters;
 
-public class Havok : IBotwConverter
+public class Havok : IDataConverter
 {
     public static Havok Shared { get; } = new();
 

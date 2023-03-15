@@ -1,6 +1,6 @@
 ﻿namespace BotwModConverter.Core.Converters;
 
-public class Bfres : IBotwConverter
+public class Bfres : IDataConverter
 {
     public static Bfres Shared { get; } = new();
 
