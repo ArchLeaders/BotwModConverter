@@ -68,19 +68,13 @@ jobs:
         with:
           dotnet-version: "7.0.x"
 
-      - name: Build Cead
-        shell: bash
-        run: |
-          dotnet publish lib/Cead/src/Cead.csproj \
-          -r ${{ matrix.config.runtime }} \
-          --configuration Release
-
       - name: Publish Botw Mod Converter
         shell: bash
         run: |
           dotnet publish src/${{ env.proj }}/${{ env.proj }}.csproj \
           -r ${{ matrix.config.runtime }} \
           -c Release \
+          --sc false \
           -o ${{ matrix.config.name }} \
           -p:PublishSingleFile=true \
           -p:IncludeNativeLibrariesForSelfExtract=true
