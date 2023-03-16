@@ -17,7 +17,6 @@ jobs:
             ext: ""
             arch: tar
             runtime: linux-x64
-            tree: ls -d */**
             setup: |
               sudo apt-get update
               sudo apt-get install ninja-build cmake
@@ -29,7 +28,6 @@ jobs:
             ext: .exe
             arch: zip
             runtime: win-x64
-            tree: tree
             setup: |
               choco install ninja cmake
               ninja --version
@@ -43,11 +41,24 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Tree Information Structure
-        run: ${{ matrix.config.tree }}
-
       - name: Install Dependencies
         run: ${{ matrix.config.setup }}
+
+      - name: Configure (CMake)
+        shell: bash
+        run: |
+          mkdir ./lib/Cead/native/build
+          cmake --no-warn-unused-cli \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -S ./lib/Cead/native \
+            -B ./lib/Cead/native/build \
+            -G "Ninja"
+
+      - name: Build (CMake)
+        shell: bash
+        run: |
+          cmake --build ./lib/Cead/native/build --config Release --target all -j 18
 
       - name: Install DotNET
         uses: actions/setup-dotnet@v3
@@ -55,7 +66,14 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: Publish Botw Mod Converter
-        run: dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj -r ${{ matrix.config.runtime }} --configuration Debug --output ${{ matrix.config.name }} --sc false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+        run: |
+          dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj \
+          -r ${{ matrix.config.runtime }} \
+          --configuration Debug \
+          --output ${{ matrix.config.name }} \
+          --sc false \
+          -p:PublishSingleFile=true \
+          -p:IncludeNativeLibrariesForSelfExtract=true
 
       - uses: actions/upload-artifact@v3
         name: Upload artifacts
