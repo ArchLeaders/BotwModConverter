@@ -5,23 +5,35 @@ on:
     branches: [master]
 
 jobs:
-  release:
-    name: Release ${{ matrix.platform.name }}
-    runs-on: ${{ matrix.platform.os }}
+  build:
+    name: Build ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        platform:
-          - os: ubuntu-latest
-            name: Linux
+        config:
+          - name: Linux
+            os: ubuntu-latest
             ext: ""
             arch: tar
             runtime: linux-x64
-          - os: ubuntu-latest
-            name: Windows
+            tree: ls -d */**
+            setup: |
+              sudo apt-get update
+              sudo apt-get install ninja-build cmake
+              ninja --version
+              cmake --version
+              gcc --version
+          - name: Windows
+            os: windows-latest
             ext: .exe
             arch: zip
             runtime: win-x64
+            tree: tree
+            setup: |
+              choco install ninja cmake
+              ninja --version
+              cmake --version
 
     env:
       proj: "BotwModConverter.Console"
@@ -31,20 +43,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup CMAKE
-        uses: jwlawson/actions-setup-cmake@v1.13.1
+      - name: Tree Information Structure
+        run: ${{ matrix.config.tree }}
 
-      - name: Setup MinGW
-        uses: egor-tensin/setup-mingw@v2
-        id: mingw
-        with:
-          platform: x64
-
-      - name: Configure Cead (CMAKE)
-        run: cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_C_COMPILER:FILEPATH=${{ steps.mingw.gcc }} -DCMAKE_CXX_COMPILER:FILEPATH=${{ steps.mingw.gxx }} -S./lib/native -B./lib/native/build -G "MinGW Makefiles"
-
-      - name: Build Cead
-        run: cmake --build ./lib/native/build --config Release --target all -j 18
+      - name: Install Dependencies
+        run: ${{ matrix.config.setup }}
 
       - name: Install DotNET
         uses: actions/setup-dotnet@v3
@@ -52,10 +55,10 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: Publish Botw Mod Converter
-        run: dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj -r ${{ matrix.platform.runtime }} --configuration Release --output ${{ matrix.platform.name }} --sc false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj -r ${{ matrix.config.runtime }} --configuration Debug --output ${{ matrix.config.name }} --sc false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
       - uses: actions/upload-artifact@v3
         name: Upload artifacts
         with:
-          name: ${{ env.proj }}${{ matrix.platform.ext }}
-          path: ${{ matrix.platform.name }}/${{ env.proj }}${{ matrix.platform.ext }}
+          name: ${{ env.proj }}${{ matrix.config.ext }}
+          path: ${{ matrix.config.name }}/${{ env.proj }}${{ matrix.config.ext }}
