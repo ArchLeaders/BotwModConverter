@@ -71,7 +71,7 @@ jobs:
       - name: Publish Botw Mod Converter
         shell: bash
         run: |
-          dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj \
+          dotnet publish src/${{ env.proj }}/${{ env.proj }}.csproj \
           -r ${{ matrix.config.runtime }} \
           --configuration Release \
           --output ${{ matrix.config.name }} \
