@@ -17,6 +17,8 @@ jobs:
             ext: ""
             arch: tar
             runtime: linux-x64
+            build: linux
+            vars: CXX="g++"
             setup: |
               sudo apt-get update
               sudo apt-get install ninja-build cmake
@@ -52,13 +54,14 @@ jobs:
             -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
             -DCMAKE_BUILD_TYPE:STRING=Release \
             -S ./lib/Cead/native \
-            -B ./lib/Cead/native/build \
+            -B ./lib/Cead/native/build/${{ matrix.config.build }} \
             -G "Ninja"
 
       - name: Build (CMake)
         shell: bash
         run: |
-          cmake --build ./lib/Cead/native/build --config Release --target all -j 18
+          ${{ matrix.config.vars }} \
+          cmake --build ./lib/Cead/native/build/${{ matrix.config.build }} --config Release --target all -j 18
 
       - name: Install DotNET
         uses: actions/setup-dotnet@v3
@@ -66,14 +69,14 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: Publish Botw Mod Converter
+        shell: bash
         run: |
           dotnet publish ${{ env.proj }}/${{ env.proj }}.csproj \
           -r ${{ matrix.config.runtime }} \
-          --configuration Debug \
+          --configuration Release \
           --output ${{ matrix.config.name }} \
           --sc false \
-          -p:PublishSingleFile=true \
-          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
       - uses: actions/upload-artifact@v3
         name: Upload artifacts
