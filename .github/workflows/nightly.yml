@@ -18,7 +18,7 @@ jobs:
             arch: tar
             runtime: linux-x64
             build: linux
-            msbuild-flags: -p:DefineConstants=LINUX
+            msbuild_flags: -p:DefineConstants=LINUX
             vars: CXX="g++"
             setup: |
               sudo apt-get update
@@ -78,7 +78,7 @@ jobs:
           --sc false \
           -o ${{ matrix.config.name }} \
           -p:PublishSingleFile=true \
-          -p:IncludeNativeLibrariesForSelfExtract=true ${{ msbuild-flags }}
+          -p:IncludeNativeLibrariesForSelfExtract=true ${{ matrix.config.msbuild_flags }}
 
       - uses: actions/upload-artifact@v3
         name: Upload artifacts
