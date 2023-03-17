@@ -18,6 +18,7 @@ jobs:
             arch: tar
             runtime: linux-x64
             build: linux
+            msbuild-flags: -p:DefineConstants=LINUX
             vars: CXX="g++"
             setup: |
               sudo apt-get update
@@ -61,7 +62,7 @@ jobs:
       - name: Build (CMake)
         shell: bash
         run: |
-          cmake --build ./lib/Cead/native/build/${{ matrix.config.build }} --config Release --target all -j 18
+          cmake --build ./lib/Cead/native/build/${{ matrix.config.build }} --config Release --target all -j 4
 
       - name: Install DotNET
         uses: actions/setup-dotnet@v3
@@ -77,7 +78,7 @@ jobs:
           --sc false \
           -o ${{ matrix.config.name }} \
           -p:PublishSingleFile=true \
-          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:IncludeNativeLibrariesForSelfExtract=true ${{ msbuild-flags }}
 
       - uses: actions/upload-artifact@v3
         name: Upload artifacts
