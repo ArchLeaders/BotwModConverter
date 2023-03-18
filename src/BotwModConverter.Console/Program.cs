@@ -12,15 +12,13 @@ using Cead.Interop;
 //Console.WriteLine($"Elapsed Ticks: {watch.ElapsedTicks}");
 //Console.WriteLine($"Elapsed Milliseconds: {watch.ElapsedMilliseconds}");
 
-Console.WriteLine(DllManager.CeadLib);
 DllManager.LoadCead();
 
-// using FileStream fs = File.OpenRead(args[0]);
-// Span<byte> buffer = new byte[(int)fs.Length];
-// fs.Read(buffer);
-// 
-// Byml byml = Byml.FromBinary(buffer);
-// Console.WriteLine(byml.ToText());
+using FileStream fs = File.OpenRead(args[0]);
+Span<byte> buffer = new byte[(int)fs.Length];
+fs.Read(buffer);
 
-Console.WriteLine("Loaded");
+Byml byml = Byml.FromBinary(buffer);
+Console.WriteLine(byml.ToText());
+
 Console.ReadLine();
