@@ -17,7 +17,6 @@ jobs:
             ext: ""
             runtime: linux-x64
             build: linux
-            msbuild_flags: -p:DefineConstants=LINUX
             vars: CXX="g++"
             setup: |
               sudo apt-get update
