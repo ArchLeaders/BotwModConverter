@@ -17,7 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\Cead\src\Cead.csproj" />
+    <ProjectReference Include="..\..\lib\Cead\src\Cead.csproj" Condition="'$(Configuration)'=='Debug'" />
+    <Reference Include="Cead" Condition="'$(Configuration)'=='Release'">
+      <HintPath>..\..\lib\Cead\src\bin\Release\net7.0\Cead.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
