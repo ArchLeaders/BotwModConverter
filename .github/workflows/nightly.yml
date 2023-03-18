@@ -72,7 +72,7 @@ jobs:
         run: |
           dotnet build lib/Cead/src/Cead.csproj \
           -r ${{ matrix.config.runtime }} \
-          -c Release
+          -c Release \
           --sc false ${{ matrix.config.msbuild_flags }}
 
       - name: Build Botw Mod Converter
