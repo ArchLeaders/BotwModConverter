@@ -123,7 +123,7 @@ public class BotwConverter
     {
         ReadOnlySpan<byte> raw = Utils.Decompress(data, out bool isYaz0);
         Converter converter = Utils.GetConverter(path, isYaz0);
-        
+
         Span<byte> converted = converter.ConvertToSwitch(raw);
 
         if (isYaz0) {
