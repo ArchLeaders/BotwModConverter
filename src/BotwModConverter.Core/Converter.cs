@@ -1,8 +1,9 @@
 ﻿using Cead.Interop;
+using System.Runtime.CompilerServices;
 
 namespace BotwModConverter.Core;
 
-public abstract class Converter : IDisposable
+public abstract class Converter
 {
     public PtrHandle? NativeHandle { get; protected set; }
     public string? Path { get; private set; }
@@ -16,10 +17,4 @@ public abstract class Converter : IDisposable
 
     public abstract Span<byte> ConvertToWiiu(ReadOnlySpan<byte> data);
     public abstract Span<byte> ConvertToSwitch(ReadOnlySpan<byte> data);
-
-    public void Dispose()
-    {
-        NativeHandle?.Dispose();
-        GC.SuppressFinalize(this);
-    }
 }

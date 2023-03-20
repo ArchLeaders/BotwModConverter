@@ -127,10 +127,12 @@ public class BotwConverter
         Span<byte> converted = converter.ConvertToWiiu(raw);
 
         if (isYaz0) {
-            return Yaz0.Compress(converted, out handle);
+            Span<byte> compressed = Yaz0.Compress(converted, out handle);
+            converter.NativeHandle?.Dispose();
+            return compressed;
         }
         else {
-            handle = null;
+            handle = converter.NativeHandle;
             return converted;
         }
     }
