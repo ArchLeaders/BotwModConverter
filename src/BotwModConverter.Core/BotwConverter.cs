@@ -134,4 +134,64 @@ public class BotwConverter
             return converted;
         }
     }
+
+#if DEBUG
+
+    public static int ConvertModDebug(BotwMod mod, string outputRoot, ThreadMode threadMode = ThreadMode.Parallel)
+    {
+        BotwConverter converter = new(mod, threadMode);
+        converter.ConvertRootDebug(outputRoot);
+        return converter._counter;
+    }
+
+    public void ConvertRootDebug(string outputRoot)
+    {
+        foreach (var folderName in _mod.GetModFolders()) {
+            string folder = Path.Combine(_mod.Root, folderName!);
+            string output = Path.Combine(outputRoot, folderName!);
+            ConvertFolderDebug(folder, output);
+        }
+    }
+
+    private void ConvertFolderDebug(string path, string outputRoot)
+    {
+        ConvertFilesDebug(path, outputRoot);
+        foreach (var folder in Directory.EnumerateDirectories(path)) {
+            string output = Path.Combine(outputRoot, Path.GetFileName(folder));
+            ConvertFolderDebug(folder, output);
+        }
+    }
+
+    private void ConvertFilesDebug(string path, string outputRoot)
+    {
+        Directory.CreateDirectory(outputRoot);
+        foreach (var file in Directory.EnumerateFiles(path)) {
+            string output = Path.Combine(outputRoot, Path.GetFileName(file));
+            ConvertFileDebug(file, output);
+            _counter++;
+        }
+    }
+
+    internal void ConvertFileDebug(string file, string output)
+    {
+        using FileStream src = File.OpenRead(file);
+        Span<byte> data = src.Length < 0x100000 ? stackalloc byte[(int)src.Length] : new byte[src.Length];
+        src.Read(data);
+
+        ReadOnlySpan<byte> converted = ConvertData(data, file, out PtrHandle? handle);
+
+        // Some converters (namely BFRES) return a NULL
+        // value to indicate that the file should not be written
+        if (converted != null) {
+            using FileStream fs = File.Create(output, data.Length);
+            fs.Write(converted);
+        }
+
+        handle?.Dispose();
+
+        // This should write to a custom logger instead
+        ConverterLog.WriteLine($"{file} >> {output} : {data.Length}");
+    }
+
+#endif
 }
