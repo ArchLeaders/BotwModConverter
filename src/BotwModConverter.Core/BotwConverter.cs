@@ -122,7 +122,7 @@ public class BotwConverter
     internal static Span<byte> ConvertData(Span<byte> data, string path, out PtrHandle? handle)
     {
         ReadOnlySpan<byte> raw = Utils.Decompress(data, out bool isYaz0);
-        IDataConverter converter = Utils.GetConverter(path, isYaz0);
+        Converter converter = Utils.GetConverter(path, isYaz0);
 
         Span<byte> converted = converter.ConvertToWiiu(raw);
 

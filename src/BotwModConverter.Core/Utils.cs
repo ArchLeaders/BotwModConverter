@@ -1,4 +1,5 @@
-﻿using Cead;
+﻿using BotwModConverter.Core.Converters;
+using Cead;
 using Standart.Hash.xxHash;
 using System.Buffers.Binary;
 using System.Reflection;
@@ -46,20 +47,20 @@ public static class Utils
         return !GetHashes(platform).Contains(xxHash3.ComputeHash(data, data.Length));
     }
 
-    public static IDataConverter GetConverter(string path, bool isYaz0)
+    public static Converter GetConverter(string path, bool isYaz0)
     {
         // Custom converter for the actorinfo
         if (Path.GetFileName(path) == "ActorInfo.product.sbyml") {
-            return Converters.ActorInfo.Shared;
+            return Converter.Init<ActorInfoConverter>(path);
         }
 
         string ext = Path.GetExtension(path).Remove(0, isYaz0 ? 2 : 1);
         return ext switch {
-            "bars" => Converters.Bars.Shared,
+            "bars" => Converter.Init<BarsConverter>(path),
 
             "bcamanim" or "bfres" or "bitemico" or
             "bmapopen" or "bmaptex" or "breviewtex" or
-            "bstftex" => Converters.Bfres.Shared,
+            "bstftex" => Converter.Init<BfresConverter>(path),
 
             // Binary Ecosystem ("beco")
             // Binary Loop Asset List ("blal")
@@ -67,7 +68,7 @@ public static class Utils
 
             "baischedule" or "baniminfo" or "bgdata" or
             "bgsvdata" or "bquestpack" or "byml" or
-            "mubin" => Converters.Byml.Shared,
+            "mubin" => Converter.Init<BymlConverter>(path),
 
             // AnimationDrivenSpeed/AnimalUnitSpeed (".bin") ???
             // Emitter Set List (".esetlist")
@@ -75,20 +76,16 @@ public static class Utils
 
             "hkcl" or "hknm2" or "hkrb" or
             "hkrg" or "hksc" or
-            "hktm" => Converters.Havok.Shared,
+            "hktm" => Converter.Init<HavokConverter>(path),
 
             // MATE (".mate") ???
-            "msbt" => Converters.Msbt.Shared,
+            "msbt" => Converter.Init<MsbtConverter>(path),
             // ResourceSizeTable (".rstb")
 
             "bactorpack" or "beventpack" or "bgenv" or
             "blarc" or "bmodelsh" or "genvb" or
-            "sarc" or "stats" or
-            "stera" => Converters.Sarc.Shared,
-
-            // Pack files need to be staged in order
-            // to properly converter Tex1/Tex2 files
-            "pack" => Converters.SarcStaged.Shared,
+            "sarc" or "stats" or "stera" or
+            "pack" => Converter.Init<SarcConverter>(path),
 
             // Terrain Scene Binary (".tscb")
             // Water Layout ("water.extm")
