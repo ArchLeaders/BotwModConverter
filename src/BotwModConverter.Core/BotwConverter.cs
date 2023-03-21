@@ -1,4 +1,5 @@
-﻿using Cead;
+﻿using BotwModConverter.Core.Converters.FileSystem;
+using Cead;
 using Cead.Interop;
 using System.Runtime.CompilerServices;
 
@@ -68,7 +69,16 @@ public class BotwConverter
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         async Task Process(string folder)
         {
-            string output = Path.Combine(outputRoot, Path.GetFileName(folder));
+            string folderName = Path.GetFileName(folder);
+            string output = Path.Combine(outputRoot, folderName);
+
+            if (folderName == "Model") {
+                Converter.Init<ModelsConverter>(folder);
+            }
+            else if (folderName == "Pack") {
+                Converter.Init<PacksConverter>(folder);
+            }
+
             await ConvertFolder(folder, output);
         }
     }
@@ -105,12 +115,8 @@ public class BotwConverter
 
         ReadOnlySpan<byte> converted = ConvertData(data, file, out PtrHandle? handle);
 
-        // Some converters (namely BFRES) return a NULL
-        // value to indicate that the file should not be written
-        if (converted != null) {
-            using FileStream fs = File.Create(output, data.Length);
-            fs.Write(converted);
-        }
+        using FileStream fs = File.Create(output, data.Length);
+        fs.Write(converted);
 
         handle?.Dispose();
 
@@ -159,7 +165,16 @@ public class BotwConverter
     {
         ConvertFilesDebug(path, outputRoot);
         foreach (var folder in Directory.EnumerateDirectories(path)) {
-            string output = Path.Combine(outputRoot, Path.GetFileName(folder));
+            string folderName = Path.GetFileName(folder);
+            string output = Path.Combine(outputRoot, folderName);
+
+            if (folderName == "Model") {
+                Converter.Init<ModelsConverter>(folder);
+            }
+            else if (folderName == "Pack") {
+                Converter.Init<PacksConverter>(folder);
+            }
+
             ConvertFolderDebug(folder, output);
         }
     }

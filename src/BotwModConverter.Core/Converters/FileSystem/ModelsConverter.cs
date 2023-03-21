@@ -1,6 +1,6 @@
-﻿namespace BotwModConverter.Core.Converters;
+﻿namespace BotwModConverter.Core.Converters.FileSystem;
 
-public class PackConverter : Converter
+public class ModelsConverter : Converter
 {
     public override Span<byte> ConvertToSwitch(ReadOnlySpan<byte> data)
     {

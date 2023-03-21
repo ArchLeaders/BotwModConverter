@@ -84,11 +84,8 @@ public static class Utils
 
             "bactorpack" or "beventpack" or "bgenv" or
             "blarc" or "bmodelsh" or "genvb" or
-            "sarc" or "stats" or
-            "stera" => Converter.Init<SarcConverter>(path),
-
-            // Custom sarc converter for handling nested bfres files
-            "pack" => Converter.Init<PackConverter>(path),
+            "sarc" or "stats" or "stera" or
+            "pack" => Converter.Init<SarcConverter>(path),
 
             // Terrain Scene Binary (".tscb")
             // Water Layout ("water.extm")
