@@ -4,13 +4,14 @@ namespace BotwModConverter.Core;
 
 public abstract class Converter
 {
+    protected string _path = null!;
+
     public PtrHandle? NativeHandle { get; protected set; }
-    public string? Path { get; private set; }
 
     public static T Init<T>(string path) where T : Converter, new()
     {
         return new T() {
-            Path = path
+            _path = path
         };
     }
 
