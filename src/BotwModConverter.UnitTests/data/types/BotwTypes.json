@@ -1,0 +1,542 @@
+{
+  ".agstats": {
+    "Header": "STAT",
+    "IsYaz0": false
+  },
+  ".baacl": {
+    "Header": "AACL",
+    "IsYaz0": false
+  },
+  ".baatarc": {
+    "Header": "SARC",
+    "IsYaz0": false
+  },
+  ".baatn": {
+    "Header": "AATN",
+    "IsYaz0": false
+  },
+  ".baglblm": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglccr": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglclwd": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglcube": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bagldof": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglenv": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglenvset": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglfila": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bagllmap": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bagllref": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglmf": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baglshpp": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bagst": {
+    "Header": "AGST",
+    "IsYaz0": false
+  },
+  ".baiprog": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baischedule": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": false
+  },
+  ".baniminfo": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": false
+  },
+  ".baroc": {
+    "Header": "AROC",
+    "IsYaz0": false
+  },
+  ".bars": {
+    "Header": "BARS",
+    "IsYaz0": false
+  },
+  ".bas": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".baslist": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bassetting": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".batcl": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".batcllist": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bawareness": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bawntable": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bbonectrl": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bcamanim": {
+    "Header": "FRES",
+    "IsYaz0": false
+  },
+  ".bchemical": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bchmres": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bdemo": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bdgnenv": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bdmgparam": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bdrop": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bfevfl": {
+    "Header": "BFEV",
+    "IsYaz0": false
+  },
+  ".bfevtm": {
+    "Header": "BFEV",
+    "IsYaz0": false
+  },
+  ".bffnt": {
+    "Header": "FFNT",
+    "IsYaz0": false
+  },
+  ".bflan": {
+    "Header": "FLAN",
+    "IsYaz0": false
+  },
+  ".bflim": {
+    "Header": "\uFFFD\uFFFD\uFFFD\r",
+    "IsYaz0": false
+  },
+  ".bflyt": {
+    "Header": "FLYT",
+    "IsYaz0": false
+  },
+  ".bfsar": {
+    "Header": "FSAR",
+    "IsYaz0": false
+  },
+  ".bfsha": {
+    "Header": "FSHA",
+    "IsYaz0": false
+  },
+  ".bfstm": {
+    "Header": "FSTM",
+    "IsYaz0": false
+  },
+  ".bgapkginfo": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bgapkglist": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bgdata": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": false
+  },
+  ".bgenv": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bglght": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bgmsconf": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bgparamlist": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bgsdw": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bgsh": {
+    "Header": "Gfx2",
+    "IsYaz0": false
+  },
+  ".bgsvdata": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": false
+  },
+  ".bin": {
+    "Header": "\u0000\u0000\u0000\u0018",
+    "IsYaz0": false
+  },
+  ".bksky": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".blal": {
+    "Header": "BLAL",
+    "IsYaz0": false
+  },
+  ".blifecondition": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".blod": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bmodellist": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bmscdef": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bmscinfo": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bnetfp": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bofx": {
+    "Header": "FRES",
+    "IsYaz0": false
+  },
+  ".bphyscharcon": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bphyscontact": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bphysics": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bphyslayer": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bphysmaterial": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bphyssb": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bphyssubmat": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bptclconf": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".brecipe": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".brgbw": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".brgcon": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".brgconfig": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".brgconfiglist": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bsfbt": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bsft": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bshop": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bumii": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bvege": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bwinfo": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".bxml": {
+    "Header": "AAMP",
+    "IsYaz0": false
+  },
+  ".byaml": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": false
+  },
+  ".byml": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": false
+  },
+  ".extm": {
+    "Header": "\u0000\u0000\u0000\u0000",
+    "IsYaz0": false
+  },
+  ".fxparam": {
+    "Header": "\u003C?xm",
+    "IsYaz0": false
+  },
+  ".genvres": {
+    "Header": "FRES",
+    "IsYaz0": false
+  },
+  ".gsh": {
+    "Header": "Gfx2",
+    "IsYaz0": false
+  },
+  ".gtx": {
+    "Header": "Gfx2",
+    "IsYaz0": false
+  },
+  ".hght": {
+    "Header": "\u0000 \u0000 ",
+    "IsYaz0": false
+  },
+  ".hkcl": {
+    "Header": "W\uFFFD\uFFFDW",
+    "IsYaz0": false
+  },
+  ".hkrb": {
+    "Header": "W\uFFFD\uFFFDW",
+    "IsYaz0": false
+  },
+  ".hkrg": {
+    "Header": "W\uFFFD\uFFFDW",
+    "IsYaz0": false
+  },
+  ".jpg": {
+    "Header": "\uFFFD\uFFFD\uFFFD\uFFFD",
+    "IsYaz0": false
+  },
+  ".mate": {
+    "Header": "\u0000\u0000\u0000\u0000",
+    "IsYaz0": false
+  },
+  ".mp4": {
+    "Header": "\u0000\u0000\u0000 ",
+    "IsYaz0": false
+  },
+  ".msbt": {
+    "Header": "MsgS",
+    "IsYaz0": false
+  },
+  ".pack": {
+    "Header": "SARC",
+    "IsYaz0": false
+  },
+  ".raw": {
+    "Header": "\u0000\u0000\u0000\u0000",
+    "IsYaz0": false
+  },
+  ".sbactorpack": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".sbeco": {
+    "Header": "\u0000\u0011\u00223",
+    "IsYaz0": true
+  },
+  ".sbelnk": {
+    "Header": "XLNK",
+    "IsYaz0": true
+  },
+  ".sbeventpack": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".sbfarc": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".sbfres": {
+    "Header": "FRES",
+    "IsYaz0": true
+  },
+  ".sbfsha": {
+    "Header": "FSHA",
+    "IsYaz0": true
+  },
+  ".sbitemico": {
+    "Header": "FRES",
+    "IsYaz0": true
+  },
+  ".sblarc": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".sblwp": {
+    "Header": "PrOD",
+    "IsYaz0": true
+  },
+  ".sbmapopen": {
+    "Header": "FRES",
+    "IsYaz0": true
+  },
+  ".sbmaptex": {
+    "Header": "FRES",
+    "IsYaz0": true
+  },
+  ".sbquestpack": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": true
+  },
+  ".sbreviewtex": {
+    "Header": "FRES",
+    "IsYaz0": true
+  },
+  ".sbslnk": {
+    "Header": "XLNK",
+    "IsYaz0": true
+  },
+  ".sbstftex": {
+    "Header": "FRES",
+    "IsYaz0": true
+  },
+  ".sbyml": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": true
+  },
+  ".sesetlist": {
+    "Header": "EFTB",
+    "IsYaz0": true
+  },
+  ".sfmc": {
+    "Header": "\u0000\u0000\u0000\u0002",
+    "IsYaz0": true
+  },
+  ".sgenvb": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".sharcb": {
+    "Header": "BAHS",
+    "IsYaz0": false
+  },
+  ".shknm2": {
+    "Header": "W\uFFFD\uFFFDW",
+    "IsYaz0": true
+  },
+  ".shksc": {
+    "Header": "W\uFFFD\uFFFDW",
+    "IsYaz0": true
+  },
+  ".shktmrb": {
+    "Header": "W\uFFFD\uFFFDW",
+    "IsYaz0": true
+  },
+  ".skybin": {
+    "Header": "\u0000\u0000\u0000\u0000",
+    "IsYaz0": false
+  },
+  ".smubin": {
+    "Header": "BY\u0000\u0002",
+    "IsYaz0": true
+  },
+  ".srsizetable": {
+    "Header": "RSTB",
+    "IsYaz0": true
+  },
+  ".ssarc": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".sstats": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".sstera": {
+    "Header": "SARC",
+    "IsYaz0": true
+  },
+  ".tscb": {
+    "Header": "TSCB",
+    "IsYaz0": false
+  },
+  ".txt": {
+    "Header": "1.5.",
+    "IsYaz0": false
+  }
+}
