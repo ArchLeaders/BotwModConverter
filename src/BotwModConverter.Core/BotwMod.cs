@@ -3,6 +3,8 @@ using System.Runtime.Serialization;
 
 namespace BotwModConverter.Core;
 
+public enum BotwPlatform { Switch, Wiiu }
+
 public class InvalidBotwModException : Exception
 {
     public InvalidBotwModException() { }
