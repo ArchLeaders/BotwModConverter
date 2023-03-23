@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace BotwModConverter.Core;
+namespace BotwModConverter.Core.Helpers;
 
 /// <summary>
 /// Global configuration for the BOTW game files
