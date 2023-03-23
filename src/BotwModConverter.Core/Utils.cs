@@ -31,15 +31,10 @@ public static class Utils
         return _hashes[platform]!;
     }
 
-    public static ReadOnlySpan<byte> Decompress(Span<byte> data, out bool isYaz0)
+    public static Span<byte> Decompress(Span<byte> data, out bool isYaz0)
     {
-        if (data.Length > 4 && data[0..4].SequenceEqual("Yaz0"u8)) {
-            isYaz0 = true;
-            return Yaz0.Decompress(data);
-        }
-
-        isYaz0 = false;
-        return data;
+        isYaz0 = data.Length > 4 && data[0..4].SequenceEqual("Yaz0"u8);
+        return isYaz0 ? Yaz0.Decompress(data) : data;
     }
 
     public static bool IsModded(ReadOnlySpan<byte> data, BotwPlatform platform)
