@@ -57,7 +57,7 @@ public abstract class Converter
             "bactorpack" or "beventpack" or "bgenv" or
             "blarc" or "bmodelsh" or "genvb" or
             "sarc" or "stats" or "stera" or
-            "pack" => Init<SarcConverter>(path),
+            "baatarc" or "pack" => Init<SarcConverter>(path),
 
             // Terrain Scene Binary (".tscb")
             // Water Layout ("water.extm")
