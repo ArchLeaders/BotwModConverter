@@ -1,0 +1,26 @@
+name: Update License Date
+on:
+  workflow_dispatch:
+    inputs: { }
+  schedule:
+  - cron: 0 0 1 1 * # Every January 1st
+
+jobs:
+  update-date:
+    permissions: write-all
+    name: Update License Date
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Found last year date, replace, and push
+        shell: bash
+        run: |
+          sed -i "s/$(date -d 'last year' +%Y)/$(date +%Y)/g" License.md
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          add: License.md
+          message: 'chore(license.md) Update License Date'

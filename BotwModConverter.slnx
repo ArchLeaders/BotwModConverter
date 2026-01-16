@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Tests/">
+    <Project Path="tests/UnitTests/UnitTests.csproj" />
+  </Folder>
+  <Project Path="src/BotwModConverter.Core/BotwModConverter.Core.csproj" />
+  <Project Path="src/BotwModConverter/BotwModConverter.csproj" />
+</Solution>

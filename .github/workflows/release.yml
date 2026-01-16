@@ -1,0 +1,115 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions: write-all
+    outputs:
+      release: ${{ steps.release.outputs.upload_url }}
+      version: ${{ steps.version.outputs.version-without-v }}
+
+    steps:
+      - name: Get Version
+        uses: battila7/get-version-action@v2.2.1
+        id: version
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: BotW Mod Converter - ${{ steps.version.outputs.version }}
+
+  build:
+    needs: release
+    permissions: write-all
+    name: ${{ matrix.target.project }} on ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        target:
+          - project: BotwModConverter
+        config:
+          - name: Windows (x64)
+            os: ubuntu-latest
+            runtime: win-x64
+            runtime_name: win-x64
+            extension: .exe
+          - name: Windows (arm64)
+            os: ubuntu-latest
+            runtime: win-arm64
+            runtime_name: win-arm64
+            extension: .exe
+          - name: Linux (x64)
+            os: ubuntu-latest
+            runtime: linux-x64
+            runtime_name: linux-x64
+            extension: ~
+          - name: Linux (arm64)
+            os: ubuntu-latest
+            runtime: linux-arm64
+            runtime_name: linux-arm64
+            extension: ~
+          - name: MacOS (x64)
+            os: ubuntu-latest
+            runtime: osx-x64
+            runtime_name: osx-x64
+            extension: ~
+          - name: MacOS (arm64)
+            os: ubuntu-latest
+            runtime: osx-arm64
+            runtime_name: osx-arm64
+            extension: ~
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: "9.x.x"
+
+      - name: Build
+        shell: bash
+        run: |
+          dotnet publish src/${{ matrix.target.project }} \
+          -c Release \
+          -o ${{ matrix.target.project }}-${{ matrix.config.runtime }} \
+          -r ${{ matrix.config.runtime }} \
+          --sc false \
+          --version-suffix ${{ needs.release.outputs.version }} \
+          -p:Version=${{ needs.release.outputs.version }} ${{ matrix.config.flags }} \
+          -p:DebugType=embedded
+
+      - name: Remove JSON Files (temporary - step can be removed later)
+        run: find ${{ matrix.target.project }}-${{ matrix.config.runtime }} -name "*.json" -type f -delete
+
+      - name: Archive Build
+        uses: TheDoctor0/zip-release@0.7.6
+        with:
+          type: zip
+          filename: ../${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip
+          directory: ${{ matrix.target.project }}-${{ matrix.config.runtime }}
+          path: ./**
+
+      - name: Upload Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          upload_url: ${{ needs.release.outputs.release }}
+          asset_path: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip
+          asset_name: ${{ matrix.target.project }}-${{ matrix.config.runtime_name }}.zip
+          asset_content_type: application/zip

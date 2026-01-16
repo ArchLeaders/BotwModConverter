@@ -1,23 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Data\switch.xxhash" />
-    <EmbeddedResource Include="Data\wiiu.xxhash" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AampLibrary" Version="1.0.10" />
-    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\lib\Cead\src\Cead.csproj" />
-  </ItemGroup>
 
 </Project>
