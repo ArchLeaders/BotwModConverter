@@ -1,29 +1,42 @@
-# Botw Data Types
+# Simple Data Types
 
-|Magic |    Extension    | Yaz0 Compressed |              Description               |   IO State  |  Conversion Info   |
-|:----:|:---------------:|:---------------:|----------------------------------------|:-----------:|--------------------|
-| AAMP |    .baiprog     |      False      |                                        | Switch/WiiU | Endianess          |
-| AGST |     .bagst      |      False      |                                        |             |                    |
-| BARS |      .bars      |      False      |                                        |             |                    |
-| BFEV |     .bfevfl     |      False      |                                        | Switch/WiiU | None               |
-| BLAL |      .blal      |      False      |                                        |             |                    |
-|  BY  |  .baischedule   |      False      |                                        | Switch/WiiU | Endianess          |
-| EFTB |    .esetlist    |      True       |                                        |             |                    |
-| FFNT |     .bffnt      |      False      |                                        |             |                    |
-| FLAN |     .bflan      |      False      |                                        |             |                    |
-| FLYT |     .bflyt      |      False      |                                        |             |                    |
-| FRES |    .bcamanim    |      False      |                                        |   > WiiU    | *Stuff?*           |
-| FSAR |     .bfsar      |      False      |                                        |             |                    |
-| FSHA |     .bfsha      |      True       |                                        |             |                    |
-| FSTM |     .bfstm      |      False      |                                        |             |                    |
-| Gfx2 |      .gsh       |      False      |                                        |             |                    |
-| PrOD |      .blwp      |      True       |                                        |             |                    |
-| RSTB |   .rsizetable   |      True       |                                        | Switch/WiiU | Endianess & Data   |
-| SARC |    .baatarc     |      False      |                                        | Switch/WiiU | Endianess?         |
-| STAT |    .agstats     |      False      |                                        |             |                    |
-| TSCB |      .tscb      |      False      |                                        |             |                    |
-| W??W |      .hkcl      |      False      |                                        | Switch/WiiU | *Stuff?*           |
-| XLNK |     .belnk      |      True       |                                        |             |                    |
+| Magic | Extension   | Support Conversions (To) | Conversion Info                | Status |
+|:------|:------------|:-------------------------|--------------------------------|--------|
+| AAMP  | ~           | Switch & WiiU            | Endian Agnostic                | `1:1`  |
+| BFEV  | .bfevfl     | Switch & WiiU            | Endian Agnostic                | `1:1`  |
+| BLAL  | .blal       | Switch & WiiU            | Endian Agnostic                | `1:1`  |
+| BY    | ~           | Switch & WiiU            | Endian Agnostic                | `1:1`  |
+| SARC  | ~           | Switch & WiiU            | Endian Agnostic                | `1:1`  |
+| ~     | .beco       | Switch & WiiU            | Endian Swap                    | `1:1`  |
+| ~     | .bin        | Switch & WiiU            | Endian Swap **                 | `1:1`  |
+| ~     | .fmc        | Switch & WiiU            | Endian Swap                    | `1:1`  |
+| AGST  | .bagst      |                          | Unused(?) *                    | `1:1`  |
+| FFNT  | .bffnt      |                          | ???                            |        |
+| FLAN  | .bflan      |                          | ???                            |        |
+| FLYT  | .bflyt      |                          | ???                            |        |
+| FSAR  | .bfsar      |                          | ???                            |        |
+| FSHA  | .bfsha      |                          | ???                            |        |
+| FSTM  | .bfstm      |                          | ???                            |        |
+| PrOD  | .blwp       |                          | ???                            |        |
+| ~     | .bflim      |                          | ???                            |        |
+| FRES  | .bfres      | > WiiU                   | Textures & Materials           |        |
+| HKX2  | ~           | Switch & WiiU            | Re-serialize                   |        |
+| BARS  | .bars       |                          | Update Sound Data              |        |
+| EFTB  | .esetlist   |                          | Endian Swap & Container Update |        |
+| XLNK  | .belnk      |                          | Endian Swap                    |        |
+| ~     | .mp4        |                          | MP4 to WEBM                    |        |
+| TSCB  | .tscb       | N/A                      | Same                           | `N/A`  |
+| Gfx2  | .gsh        | N/A                      | Removed on Switch              | `N/A`  |
+| STAT  | .agstats    | N/A                      | Same                           | `N/A`  |
+| ~     | .extm       | N/A                      | Same                           | `N/A`  |
+| ~     | .mate       | N/A                      | Same                           | `N/A`  |
+| ~     | .hght       | Switch & WiiU            | Same                           | `N/A`  |
+| ~     | .fxparam    | N/A                      | Plain Text (XML)               | `N/A`  |
+| RSTB  | .rsizetable | N/A                      | N/A                            | `N/A`  |
+
+*\*Removing the file had no visible effect.*
+
+# Special Files
 
 ## AAMP
 
@@ -407,20 +420,3 @@
 - *"0010/Game/AocField/Stats/archive/A-1.00.sstats//forest_density/A-1.00.forest_density.agstats"*
 - *"0010/Game/AocField/Stats/archive/A-1.00.sstats//forest_type/A-1.00.forest_type.agstats"*
 - `...`
-
-<br>
-
-
----
-
-#### Ignored File Extensions: 
-- .beco
-- .bflim
-- .bin
-- .extm
-- .fmc
-- .fxparam
-- .hght
-- .mate
-- .mp4
-- .txt
