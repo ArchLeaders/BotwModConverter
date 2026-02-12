@@ -2,6 +2,7 @@ using System.Collections.Frozen;
 using BotwModConverter.Core.Attributes;
 using BymlLibrary;
 using CommunityToolkit.HighPerformance.Buffers;
+using Revrs;
 
 namespace BotwModConverter.Core.Converters;
 
@@ -91,7 +92,7 @@ public sealed class ActorInfoConverter : IConverter
     
     public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ModContext context)
     {
-        var root = Byml.FromBinary(data);
+        var root = Byml.FromBinary(data, out _, out ushort version);
         var actors = root.GetMap()["Actors"].GetArray().Select(x => x.GetMap());
 
         foreach (var actor in actors) {
@@ -100,16 +101,23 @@ public sealed class ActorInfoConverter : IConverter
             }
             
             if (actor.TryGetValue("instSize", out var instSize)) {
-                actor["instSize"] = instSize.GetUInt32() * _instSizeRatios[profile.GetString()];
+                actor["instSize"] = instSize.Type switch {
+                    BymlNodeType.UInt32 => instSize.GetUInt32() * _instSizeRatios[profile.GetString()],
+                    BymlNodeType.Int => instSize.GetInt() * _instSizeRatios[profile.GetString()],
+                    _ => throw new NotSupportedException($"Unsupported instSize data type: '{instSize.Type}'")
+                };
             }
         }
-        
-        return default;
+
+        byte[] serialized = root.ToBinary(Endianness.Little, version);
+        var result = SpanOwner<byte>.Allocate(serialized.Length);
+        serialized.CopyTo(result.Span);
+        return result;
     }
 
     public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ModContext context)
     {
-        var root = Byml.FromBinary(data);
+        var root = Byml.FromBinary(data, out _, out ushort version);
         var actors = root.GetMap()["Actors"].GetArray().Select(x => x.GetMap());
 
         foreach (var actor in actors) {
@@ -118,10 +126,17 @@ public sealed class ActorInfoConverter : IConverter
             }
             
             if (actor.TryGetValue("instSize", out var instSize)) {
-                actor["instSize"] = instSize.GetUInt32() / _instSizeRatios[profile.GetString()];
+                actor["instSize"] = instSize.Type switch {
+                    BymlNodeType.UInt32 => instSize.GetUInt32() / _instSizeRatios[profile.GetString()],
+                    BymlNodeType.Int => instSize.GetInt() / _instSizeRatios[profile.GetString()],
+                    _ => throw new NotSupportedException($"Unsupported instSize data type: '{instSize.Type}'")
+                };
             }
         }
         
-        return default;
+        byte[] serialized = root.ToBinary(Endianness.Big, version);
+        var result = SpanOwner<byte>.Allocate(serialized.Length);
+        serialized.CopyTo(result.Span);
+        return result;
     }
 }
