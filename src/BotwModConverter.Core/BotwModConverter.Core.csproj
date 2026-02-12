@@ -10,7 +10,12 @@
   <ItemGroup>
     <PackageReference Include="BymlLibrary" Version="2.1.18" />
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
-    <PackageReference Include="Entish" Version="1.0.0-beta5" />
+    <PackageReference Include="Entish" Version="1.0.0-rc1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\SourceGenerators\CoreSourceGenerator\CoreSourceGenerator\CoreSourceGenerator.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>
