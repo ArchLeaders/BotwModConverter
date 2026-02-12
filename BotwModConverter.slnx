@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/SourceGenerators/">
+    <Project Path="src/SourceGenerators/CoreSourceGenerator/CoreSourceGenerator.Sample/CoreSourceGenerator.Sample.csproj" />
+    <Project Path="src/SourceGenerators/CoreSourceGenerator/CoreSourceGenerator/CoreSourceGenerator.csproj" />
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="tests/UnitTests/UnitTests.csproj" />
   </Folder>
