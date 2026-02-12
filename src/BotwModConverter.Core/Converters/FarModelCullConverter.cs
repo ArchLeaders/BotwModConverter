@@ -8,13 +8,13 @@ namespace BotwModConverter.Core.Converters;
 [MatchesExtension(".fmc")]
 public sealed class FarModelCullConverter : IConverter
 {
-    public static SpanOwner<byte> ToSwitch(ArraySegment<byte> data)
+    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ModContext context)
     {
         Swap(data.AsSpan().Cast<byte, uint>());
         return default;
     }
 
-    public static SpanOwner<byte> ToWiiu(ArraySegment<byte> data)
+    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ModContext context)
     {
         Swap(data.AsSpan().Cast<byte, uint>());
         return default;
