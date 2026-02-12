@@ -34,8 +34,8 @@ void Convert([Argument] string modFolderPath, string? output = null, bool parall
 
     if (parallel) {
         var res = Parallel.ForEach(ModHelper.EnumerateFiles(modFolderPath, output, isSwitch), (file, token) => {
-            var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, context);
-            ConsoleHelper.LogOperation(operation, file.Output);
+            var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, file.RelativePath, context);
+            ConsoleHelper.LogOperation(operation, file.RelativePath);
         });
 
         if (res.IsCompleted) {
@@ -47,8 +47,8 @@ void Convert([Argument] string modFolderPath, string? output = null, bool parall
     }
 
     foreach (var file in ModHelper.EnumerateFiles(modFolderPath, output, isSwitch)) {
-        var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, context);
-        ConsoleHelper.LogOperation(operation, file.Output);
+        var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, file.RelativePath, context);
+        ConsoleHelper.LogOperation(operation, file.RelativePath);
     }
 
 Completed:

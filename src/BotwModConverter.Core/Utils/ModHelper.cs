@@ -42,7 +42,7 @@ public static class ModHelper
         return name;
     }
 
-    public static IEnumerable<(string Input, string Output)> EnumerateFiles(string modFolderPath, string outputFolderPath, bool isSwitch)
+    public static IEnumerable<(string Input, string Output, string RelativePath)> EnumerateFiles(string modFolderPath, string outputFolderPath, bool isSwitch)
     {
         return isSwitch
             ? EnumerateFiles(modFolderPath, outputFolderPath,
@@ -53,15 +53,17 @@ public static class ModHelper
                 (WiiuAocFolderId, Path.Combine(NxAocTitleId, "romfs"), "0010"));
     }
 
-    private static IEnumerable<(string Input, string Output)> EnumerateFiles(string modFolderPath, string outputFolderPath, params ImmutableArray<(string, string, string)> folders)
+    private static IEnumerable<(string Input, string Output, string RelativePath)> EnumerateFiles(string modFolderPath, string outputFolderPath, params ImmutableArray<(string, string, string)> folders)
     {
         foreach (var (inputFolderName, outputFolderName, subFolder) in folders) {
             if (TryFindFolderPath(modFolderPath, inputFolderName, out var baseFolderPath)) {
                 var actualBaseFolder = subFolder is "" ? baseFolderPath : Path.Combine(baseFolderPath, subFolder);
                 foreach (var file in Directory.EnumerateFiles(actualBaseFolder, "*.*", SearchOption.AllDirectories)) {
+                    var relativePath = Path.GetRelativePath(actualBaseFolder, file);
                     yield return (
                         Input: file,
-                        Output: Path.Combine(outputFolderPath, outputFolderName, Path.GetRelativePath(actualBaseFolder, file))
+                        Output: Path.Combine(outputFolderPath, outputFolderName, relativePath),
+                        RelativePath: relativePath
                     );
                 }
             }

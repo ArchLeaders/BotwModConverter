@@ -13,7 +13,7 @@ public enum ConverterOperation
 
 public class ConverterHelper
 {
-    public static ConverterOperation ConvertOrCopy(string file, string outputFilePath, ModContext context)
+    public static ConverterOperation ConvertOrCopy(string file, string outputFilePath, string relativePath, ModContext context)
     {
         if (Path.GetDirectoryName(outputFilePath) is { } folderPath) {
             Directory.CreateDirectory(folderPath);
