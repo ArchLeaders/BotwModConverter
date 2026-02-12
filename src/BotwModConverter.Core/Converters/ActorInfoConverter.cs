@@ -102,8 +102,8 @@ public sealed class ActorInfoConverter : IConverter
             
             if (actor.TryGetValue("instSize", out var instSize)) {
                 actor["instSize"] = instSize.Type switch {
-                    BymlNodeType.UInt32 => instSize.GetUInt32() * _instSizeRatios[profile.GetString()],
-                    BymlNodeType.Int => instSize.GetInt() * _instSizeRatios[profile.GetString()],
+                    BymlNodeType.UInt32 => (uint)(instSize.GetUInt32() * _instSizeRatios[profile.GetString()]),
+                    BymlNodeType.Int => (int)(instSize.GetInt() * _instSizeRatios[profile.GetString()]),
                     _ => throw new NotSupportedException($"Unsupported instSize data type: '{instSize.Type}'")
                 };
             }
@@ -127,8 +127,8 @@ public sealed class ActorInfoConverter : IConverter
             
             if (actor.TryGetValue("instSize", out var instSize)) {
                 actor["instSize"] = instSize.Type switch {
-                    BymlNodeType.UInt32 => instSize.GetUInt32() / _instSizeRatios[profile.GetString()],
-                    BymlNodeType.Int => instSize.GetInt() / _instSizeRatios[profile.GetString()],
+                    BymlNodeType.UInt32 => (uint)(instSize.GetUInt32() / _instSizeRatios[profile.GetString()]),
+                    BymlNodeType.Int => (int)(instSize.GetInt() / _instSizeRatios[profile.GetString()]),
                     _ => throw new NotSupportedException($"Unsupported instSize data type: '{instSize.Type}'")
                 };
             }
