@@ -17,17 +17,23 @@ Console.ReadKey();
 
 return;
 
-void Convert([Argument] string modFolderPath, string? outputFolderPath = null, bool parallel = false)
-{
+void Convert([Argument] string modFolderPath, string? output = null, bool parallel = false, bool clear = false)
+{   
     bool isSwitch = ModHelper.IsSwitchMod(modFolderPath);
-    outputFolderPath ??= $"{modFolderPath}-{(isSwitch ? "WiiU" : "NX")}";
+    output ??= $"{modFolderPath}-{(isSwitch ? "WiiU" : "NX")}";
 
     var context = new ModContext {
         IsSwitch = isSwitch
     };
+    
+    if (clear) {
+        foreach (var folder in Directory.EnumerateDirectories(output)) {
+            Directory.Delete(folder, true);
+        }
+    }
 
     if (parallel) {
-        var res = Parallel.ForEach(ModHelper.EnumerateFiles(modFolderPath, outputFolderPath, isSwitch), (file, token) => {
+        var res = Parallel.ForEach(ModHelper.EnumerateFiles(modFolderPath, output, isSwitch), (file, token) => {
             var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, context);
             ConsoleHelper.LogOperation(operation, file.Output);
         });
@@ -40,7 +46,7 @@ void Convert([Argument] string modFolderPath, string? outputFolderPath = null, b
         return;
     }
 
-    foreach (var file in ModHelper.EnumerateFiles(modFolderPath, outputFolderPath, isSwitch)) {
+    foreach (var file in ModHelper.EnumerateFiles(modFolderPath, output, isSwitch)) {
         var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, context);
         ConsoleHelper.LogOperation(operation, file.Output);
     }
