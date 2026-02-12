@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using CommunityToolkit.HighPerformance.Buffers;
+using CsYaz0;
 using Revrs.Buffers;
 
 namespace BotwModConverter.Core.Utils;
@@ -19,17 +22,34 @@ public class ConverterHelper
         using var fs = File.OpenRead(file);
         using var buffer = ArraySegmentOwner<byte>.Allocate((int)fs.Length);
         fs.ReadExactly(buffer.Segment);
+        var data = buffer.Segment.AsSpan();
 
-        if (FindConverter(ModHelper.GetCanonName(file), buffer.Segment) is not { } converter) {
-            File.WriteAllBytes(outputFilePath, buffer.Segment);
+        if (FindConverter(ModHelper.GetCanonName(file), data) is not { } converter) {
+            File.WriteAllBytes(outputFilePath, data);
             return ConverterOperation.Copy;
         }
 
-        using var result = context.IsSwitch
-            ? converter.ToWiiu(buffer.Segment, context)
-            : converter.ToSwitch(buffer.Segment, context);
+        if (data.Length > 0x11 && Unsafe.As<byte, uint>(ref data[0]) == Yaz0.MAGIC) {
+            var decompressed = ArraySegmentOwner<byte>.Allocate(Yaz0.GetDecompressedSize(data));
+            Yaz0.Decompress(data, decompressed.Segment);
+            
+            using var result = context.IsSwitch
+                ? converter.ToWiiu(decompressed.Segment, context)
+                : converter.ToSwitch(decompressed.Segment, context);
 
-        File.WriteAllBytes(outputFilePath, result.Span.IsEmpty ? buffer.Segment : result.Span);
+            using var compressed = Yaz0.Compress(result.Length == 0 ? decompressed.Segment : result.Span);
+
+            File.WriteAllBytes(outputFilePath, compressed.AsSpan());
+            return ConverterOperation.Convert;
+        }
+
+        {
+            using var result = context.IsSwitch
+                ? converter.ToWiiu(buffer.Segment, context)
+                : converter.ToSwitch(buffer.Segment, context);
+
+            File.WriteAllBytes(outputFilePath, result.Length == 0 ? buffer.Segment : result.Span);
+        }
         
         return ConverterOperation.Convert;
     }
