@@ -9,13 +9,13 @@ public static class ModHelper
     public const string NxAocTitleId = "01007ef00011f001";
     public const string WiiuBaseFolderId = "content";
     public const string WiiuAocFolderId = "aoc";
-    
+
     public static bool IsSwitchMod(string modFolderPath)
     {
         if (TryFindAnyFolderPath(modFolderPath, WiiuBaseFolderId, WiiuAocFolderId)) {
             return false;
         }
-        
+
         if (TryFindAnyFolderPath(modFolderPath, NxBaseTitleId, NxAocTitleId)) {
             return true;
         }
@@ -23,7 +23,7 @@ public static class ModHelper
         throw new InvalidDataException(
             $"'{modFolderPath}' is not a valid mod folder.");
     }
-    
+
     public static ReadOnlySpan<char> GetCanonName(string filePath)
     {
         var name = Path.GetFileName(filePath.AsSpan());
@@ -38,23 +38,31 @@ public static class ModHelper
                 }
             });
         }
-        
+
         return name;
     }
-    
-    public static IEnumerable<string> EnumerateFiles(string modFolderPath, bool isSwitch)
+
+    public static IEnumerable<(string Input, string Output)> EnumerateFiles(string modFolderPath, string outputFolderPath, bool isSwitch)
     {
         return isSwitch
-            ? EnumerateFiles(modFolderPath, NxBaseTitleId, NxAocTitleId)
-            : EnumerateFiles(modFolderPath, WiiuBaseFolderId, WiiuAocFolderId);
+            ? EnumerateFiles(modFolderPath, outputFolderPath,
+                (NxBaseTitleId, WiiuBaseFolderId, "romfs"),
+                (NxAocTitleId, Path.Combine(WiiuAocFolderId, "0010"), "romfs"))
+            : EnumerateFiles(modFolderPath, outputFolderPath,
+                (WiiuBaseFolderId, Path.Combine(NxBaseTitleId, "romfs"), ""),
+                (WiiuAocFolderId, Path.Combine(NxAocTitleId, "romfs"), "0010"));
     }
-    
-    private static IEnumerable<string> EnumerateFiles(string modFolderPath, params ImmutableArray<string> folderNames)
+
+    private static IEnumerable<(string Input, string Output)> EnumerateFiles(string modFolderPath, string outputFolderPath, params ImmutableArray<(string, string, string)> folders)
     {
-        foreach (string folderName in folderNames) {
-            if (TryFindFolderPath(modFolderPath, folderName, out var baseFolderPath)) {
-                foreach (var file in Directory.EnumerateFiles(baseFolderPath, "*.*", SearchOption.AllDirectories)) {
-                    yield return file;
+        foreach (var (inputFolderName, outputFolderName, subFolder) in folders) {
+            if (TryFindFolderPath(modFolderPath, inputFolderName, out var baseFolderPath)) {
+                var actualBaseFolder = subFolder is "" ? baseFolderPath : Path.Combine(baseFolderPath, subFolder);
+                foreach (var file in Directory.EnumerateFiles(actualBaseFolder, "*.*", SearchOption.AllDirectories)) {
+                    yield return (
+                        Input: file,
+                        Output: Path.Combine(outputFolderPath, outputFolderName, Path.GetRelativePath(actualBaseFolder, file))
+                    );
                 }
             }
         }
@@ -62,10 +70,9 @@ public static class ModHelper
 
     private static bool TryFindFolderPath(string baseFolder, string folderName, [MaybeNullWhen(false)] out string path)
     {
-        path = Directory.EnumerateDirectories(baseFolder).FirstOrDefault(
-            path => Path.GetFileName(path).Equals(folderName, StringComparison.InvariantCultureIgnoreCase)
+        path = Directory.EnumerateDirectories(baseFolder).FirstOrDefault(path => Path.GetFileName(path).Equals(folderName, StringComparison.InvariantCultureIgnoreCase)
         );
-        
+
         return path is not null;
     }
 

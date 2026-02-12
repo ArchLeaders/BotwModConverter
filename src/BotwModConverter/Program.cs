@@ -27,10 +27,9 @@ void Convert([Argument] string modFolderPath, string? outputFolderPath = null, b
     };
 
     if (parallel) {
-        var res = Parallel.ForEach(ModHelper.EnumerateFiles(modFolderPath, isSwitch), (file, token) => {
-            string outputFilePath = Path.Combine(outputFolderPath, Path.GetRelativePath(modFolderPath, file));
-            var operation = ConverterHelper.ConvertOrCopy(file, outputFilePath, context);
-            ConsoleHelper.LogOperation(operation, file);
+        var res = Parallel.ForEach(ModHelper.EnumerateFiles(modFolderPath, outputFolderPath, isSwitch), (file, token) => {
+            var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, context);
+            ConsoleHelper.LogOperation(operation, file.Output);
         });
 
         if (res.IsCompleted) {
@@ -41,10 +40,9 @@ void Convert([Argument] string modFolderPath, string? outputFolderPath = null, b
         return;
     }
 
-    foreach (string file in ModHelper.EnumerateFiles(modFolderPath, isSwitch)) {
-        string outputFilePath = Path.Combine(outputFolderPath, Path.GetRelativePath(modFolderPath, file));
-        var operation = ConverterHelper.ConvertOrCopy(file, outputFilePath, context);
-        ConsoleHelper.LogOperation(operation, file);
+    foreach (var file in ModHelper.EnumerateFiles(modFolderPath, outputFolderPath, isSwitch)) {
+        var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, context);
+        ConsoleHelper.LogOperation(operation, file.Output);
     }
 
 Completed:
