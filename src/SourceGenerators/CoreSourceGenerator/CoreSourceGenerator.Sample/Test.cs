@@ -10,9 +10,9 @@ namespace CoreSourceGenerator.Sample;
 [MatchesMagic("BY", "ABC")]
 public class Test : IConverter
 {
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ModContext context) => default;
+    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context) => default;
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ModContext context) => default;
+    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context) => default;
 }
 
 [MatchesName("Test2")]
@@ -20,7 +20,7 @@ public class Test : IConverter
 [MatchesMagic("BY2", "ABC2")]
 public class Test2 : IConverter
 {
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ModContext context) => default;
+    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context) => default;
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ModContext context) => default;
+    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context) => default;
 }

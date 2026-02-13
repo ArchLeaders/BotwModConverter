@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using CommunityToolkit.HighPerformance.Buffers;
 using CsYaz0;
 using Revrs.Buffers;
 
@@ -24,7 +23,8 @@ public class ConverterHelper
         fs.ReadExactly(buffer.Segment);
         var data = buffer.Segment.AsSpan();
 
-        if (FindConverter(ModHelper.GetCanonName(file), data) is not { } converter) {
+        var canon = ModHelper.GetCanonName(relativePath);
+        if (FindConverter(canon, data) is not { } converter) {
             File.WriteAllBytes(outputFilePath, data);
             return ConverterOperation.Copy;
         }
@@ -34,8 +34,8 @@ public class ConverterHelper
             Yaz0.Decompress(data, decompressed.Segment);
             
             using var result = context.IsSwitch
-                ? converter.ToWiiu(decompressed.Segment, context)
-                : converter.ToSwitch(decompressed.Segment, context);
+                ? converter.ToWiiu(decompressed.Segment, canon, context)
+                : converter.ToSwitch(decompressed.Segment, canon, context);
 
             using var compressed = Yaz0.Compress(result.Length == 0 ? decompressed.Segment : result.Span);
 
@@ -45,8 +45,8 @@ public class ConverterHelper
 
         {
             using var result = context.IsSwitch
-                ? converter.ToWiiu(buffer.Segment, context)
-                : converter.ToSwitch(buffer.Segment, context);
+                ? converter.ToWiiu(buffer.Segment, canon, context)
+                : converter.ToSwitch(buffer.Segment, canon, context);
 
             File.WriteAllBytes(outputFilePath, result.Length == 0 ? buffer.Segment : result.Span);
         }

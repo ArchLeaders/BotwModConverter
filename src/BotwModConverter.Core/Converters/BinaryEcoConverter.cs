@@ -10,7 +10,7 @@ namespace BotwModConverter.Core.Converters;
 [MatchesExtension(".beco")]
 public sealed class BinaryEcoConverter : IConverter
 {
-    public unsafe SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ModContext context)
+    public unsafe SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context)
     {
         fixed (byte* ptr = data.AsSpan()) {
             int offset = SwapHeader((ResEcoHeader*)ptr, isSwappingToNative: BitConverter.IsLittleEndian);
@@ -20,7 +20,7 @@ public sealed class BinaryEcoConverter : IConverter
         return default;
     }
 
-    public unsafe SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ModContext context)
+    public unsafe SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context)
     {
         fixed (byte* ptr = data.AsSpan()) {
             int offset = SwapHeader((ResEcoHeader*)ptr, isSwappingToNative: !BitConverter.IsLittleEndian);
