@@ -10,4 +10,10 @@ public sealed class ModContext
     /// Collection of files waiting for other files (e.g. Text1 waiting for the correct Tex2 file to be found)
     /// </summary>
     public ConcurrentBag<string> WaitingFiles { get; } = [];
+
+    public bool Has(ReadOnlySpan<char> canon, out ArraySegment<byte> data)
+    {
+        data = default;
+        return false;
+    }
 }

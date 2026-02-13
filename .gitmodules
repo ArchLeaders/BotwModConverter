@@ -1,0 +1,3 @@
+[submodule "lib/BfresLibrary"]
+	path = lib/BfresLibrary
+	url = https://github.com/KillzXGaming/BfresLibrary

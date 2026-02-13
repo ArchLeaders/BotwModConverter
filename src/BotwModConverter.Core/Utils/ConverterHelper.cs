@@ -24,6 +24,11 @@ public class ConverterHelper
         var data = buffer.Segment.AsSpan();
 
         var canon = ModHelper.GetCanonName(relativePath);
+        var fileContext = new FileContext {
+            Canon = canon,
+            FileName = relativePath
+        };
+        
         if (FindConverter(canon, data) is not { } converter) {
             File.WriteAllBytes(outputFilePath, data);
             return ConverterOperation.Copy;
@@ -32,10 +37,11 @@ public class ConverterHelper
         if (data.Length > 0x11 && Unsafe.As<byte, uint>(ref data[0]) == Yaz0.MAGIC) {
             var decompressed = ArraySegmentOwner<byte>.Allocate(Yaz0.GetDecompressedSize(data));
             Yaz0.Decompress(data, decompressed.Segment);
+
             
             using var result = context.IsSwitch
-                ? converter.ToWiiu(decompressed.Segment, canon, context)
-                : converter.ToSwitch(decompressed.Segment, canon, context);
+                ? converter.ToWiiu(decompressed.Segment, ref fileContext, context)
+                : converter.ToSwitch(decompressed.Segment, ref fileContext, context);
 
             using var compressed = Yaz0.Compress(result.Length == 0 ? decompressed.Segment : result.Span);
 
@@ -45,8 +51,8 @@ public class ConverterHelper
 
         {
             using var result = context.IsSwitch
-                ? converter.ToWiiu(buffer.Segment, canon, context)
-                : converter.ToSwitch(buffer.Segment, canon, context);
+                ? converter.ToWiiu(buffer.Segment, ref fileContext, context)
+                : converter.ToSwitch(buffer.Segment, ref fileContext, context);
 
             File.WriteAllBytes(outputFilePath, result.Length == 0 ? buffer.Segment : result.Span);
         }

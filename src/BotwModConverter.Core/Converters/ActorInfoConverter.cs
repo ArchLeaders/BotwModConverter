@@ -90,7 +90,7 @@ public sealed class ActorInfoConverter : IConverter
         { "WolfLink", 1.87220 },
     }.ToFrozenDictionary();
     
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context)
+    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ref FileContext file, ModContext context)
     {
         var root = Byml.FromBinary(data, out _, out ushort version);
         var actors = root.GetMap()["Actors"].GetArray().Select(x => x.GetMap());
@@ -115,7 +115,7 @@ public sealed class ActorInfoConverter : IConverter
         return result;
     }
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ReadOnlySpan<char> canon, ModContext context)
+    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ref FileContext file, ModContext context)
     {
         var root = Byml.FromBinary(data, out _, out ushort version);
         var actors = root.GetMap()["Actors"].GetArray().Select(x => x.GetMap());

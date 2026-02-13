@@ -15,6 +15,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\BfresLibrary\BfresLibrary\BfresLibrary.csproj" />
     <ProjectReference Include="..\SourceGenerators\CoreSourceGenerator\CoreSourceGenerator\CoreSourceGenerator.csproj"
                       OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>

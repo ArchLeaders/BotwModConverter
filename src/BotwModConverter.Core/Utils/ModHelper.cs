@@ -42,6 +42,15 @@ public static class ModHelper
         return name;
     }
 
+    public static unsafe ReadOnlySpan<char> ToTexN(this ReadOnlySpan<char> canon, char num)
+    {
+        fixed (char* ptr = canon) {
+            return new Span<char>(ptr, canon.Length) {
+                [^7] = num
+            };
+        }
+    }
+
     public static IEnumerable<(string Input, string Output, string RelativePath)> EnumerateFiles(string modFolderPath, string outputFolderPath, bool isSwitch)
     {
         return isSwitch
