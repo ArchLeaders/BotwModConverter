@@ -12,6 +12,6 @@ public class GetCanonNameTests
     [InlineData("F:\\Some\\Path\\And\\File.ssarc", "File.sarc")]
     public static void ShouldStripSPrefix(string source, string result)
     {
-        ModHelper.GetCanonName(source).ToString().Should().Be(result);
+        source.ToCanon().ToString().Should().Be(result);
     }
 }

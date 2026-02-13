@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using BotwModConverter.Core.Attributes;
 using BotwModConverter.Core.FileFormats.BinaryEco;
 using CommunityToolkit.HighPerformance;
@@ -8,26 +9,32 @@ using Entish;
 namespace BotwModConverter.Core.Converters;
 
 [MatchesExtension(".beco")]
-public sealed class BinaryEcoConverter : IConverter
+public sealed unsafe class BinaryEcoConverter : IConverter
 {
-    public unsafe SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToSwitch(ConverterEngine engine, ref ModFile file)
     {
-        fixed (byte* ptr = data.AsSpan()) {
+        using var buffer = file.Rent();
+        var data = buffer.Span;
+        
+        fixed (byte* ptr = data) {
             int offset = SwapHeader((ResEcoHeader*)ptr, isSwappingToNative: BitConverter.IsLittleEndian);
             SwapSegments(offset, ref data);
         }
 
-        return default;
+        return true;
     }
 
-    public unsafe SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToWiiu(ConverterEngine engine, ref ModFile file)
     {
-        fixed (byte* ptr = data.AsSpan()) {
+        using var buffer = file.Rent();
+        var data = buffer.Span;
+        
+        fixed (byte* ptr = data) {
             int offset = SwapHeader((ResEcoHeader*)ptr, isSwappingToNative: !BitConverter.IsLittleEndian);
             SwapSegments(offset, ref data);
         }
 
-        return default;
+        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49,9 +56,9 @@ public sealed class BinaryEcoConverter : IConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SwapSegments(int offset, ref ArraySegment<byte> data)
+    public static void SwapSegments(int offset, ref Span<byte> data)
     {
-        var segments = data.AsSpan(offset..).Cast<byte, ushort>();
+        var segments = data[offset..].Cast<byte, ushort>();
         for (int i = 0; i < segments.Length; i++) {
             EndianUtils.Swap(ref segments[i]);
         }

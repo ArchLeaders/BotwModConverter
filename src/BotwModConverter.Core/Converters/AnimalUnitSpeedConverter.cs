@@ -1,6 +1,5 @@
 using BotwModConverter.Core.Attributes;
 using CommunityToolkit.HighPerformance;
-using CommunityToolkit.HighPerformance.Buffers;
 using Entish;
 
 namespace BotwModConverter.Core.Converters;
@@ -8,16 +7,18 @@ namespace BotwModConverter.Core.Converters;
 [MatchesName("AnimalUnitSpeed.bin")]
 public sealed class AnimalUnitSpeedConverter : IConverter
 {
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToSwitch(ConverterEngine engine, ref ModFile file)
     {
-        Swap(data.AsSpan().Cast<byte, uint>());
-        return default;
+        using var data = file.Rent();
+        Swap(data.Span.Cast<byte, uint>());
+        return true;
     }
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToWiiu(ConverterEngine engine, ref ModFile file)
     {
-        Swap(data.AsSpan().Cast<byte, uint>());
-        return default;
+        using var data = file.Rent();
+        Swap(data.Span.Cast<byte, uint>());
+        return true;
     }
 
     private static void Swap(Span<uint> data)

@@ -3,57 +3,62 @@ using BfresLibrary.PlatformConverters;
 using BfresLibrary.WiiU;
 using BotwModConverter.Core.Attributes;
 using BotwModConverter.Core.Utils;
-using CommunityToolkit.HighPerformance.Buffers;
 
 namespace BotwModConverter.Core.Converters;
 
 [MatchesExtension(".bfres")]
 public sealed class BfresConverter : IConverter
 {
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToSwitch(ConverterEngine engine, ref ModFile file)
     {
-        if (file.Canon.EndsWith(".Tex2.bfres") && context.Has(file.Canon.ToTexN('1'), out var tex1Data)) {
-            return TexToSwitch(tex1Data, data, ref file);
+        if (file.Canon.EndsWith(".Tex2.bfres")) {
+            if (engine.HasDependency(file.Canon.ToTexN('1'), out var tex1Data)) {
+                using var data = file.Stream();
+                TexToSwitch(engine, tex1Data, data);
+                tex1Data.Dispose();
+                return true;
+            }
+
+            engine.StoreDependency(file.Canon.ToTexN('2'), file.Stream());
+            return false;
         }
         
-        if (file.Canon.EndsWith(".Tex1.bfres") && context.Has(file.Canon.ToTexN('2'), out var tex2Data)) {
-            return TexToSwitch(data, tex2Data, ref file);
+        if (file.Canon.EndsWith(".Tex1.bfres")) {
+            if (engine.HasDependency(file.Canon.ToTexN('2'), out var tex2Data)) {
+                using var data = file.Stream();
+                TexToSwitch(engine, data, tex2Data);
+                tex2Data.Dispose();
+                return true;
+            }
+
+            engine.StoreDependency(file.Canon.ToTexN('1'), file.Stream());
+            return false;
         }
         
-        ArgumentNullException.ThrowIfNull(data.Array, nameof(data));
-        using var resMs = new MemoryStream(data.Array, data.Offset, data.Count, false, true);
-        var res = new ResFile(resMs);
+        using var stream = file.Stream();
+        var res = new ResFile(stream);
         
         res.ChangePlatform(
             isSwitch: true,
-            alignment: 0x100,
+            alignment: 4096,
             versionA: 0, 5, 0, 3,
             ConverterHandle.BOTW
         );
 
-        using var ms = new MemoryStream();
-        res.Save(ms);
+        res.Alignment = 0x0C;
+
+        using var output = file.OpenWrite(out var compress);
+        res.Save(output);
         
-        if (!ms.TryGetBuffer(out var buffer)) {
-            buffer = ms.ToArray();
-        }
+        compress?.Invoke();
         
-        var result = SpanOwner<byte>.Allocate((int)ms.Length);
-        buffer.AsSpan().CopyTo(result.Span);
-        
-        return result;
+        return true;
     }
     
-    private static SpanOwner<byte> TexToSwitch(ArraySegment<byte> tex1Data, ArraySegment<byte> tex2Data, ref FileContext file)
+    private static void TexToSwitch(ConverterEngine engine, Stream tex1Data, Stream tex2Data)
     {
-        ArgumentNullException.ThrowIfNull(tex1Data.Array, nameof(tex1Data));
-        ArgumentNullException.ThrowIfNull(tex2Data.Array, nameof(tex2Data));
-        
-        using var tex1Ms = new MemoryStream(tex1Data.Array, tex1Data.Offset, tex1Data.Count, false, true);
-        var tex1 = new ResFile(tex1Ms);
-        
-        using var tex2Ms = new MemoryStream(tex2Data.Array, tex2Data.Offset, tex2Data.Count, false, true);
-        var tex2 = new ResFile(tex2Ms);
+        var tex1 = new ResFile(tex1Data);
+        var tex2 = new ResFile(tex2Data);
 
         foreach (var tex in tex2.Textures.Values) {
             ((Texture)tex1.Textures[tex.Name]).MipSwizzle = ((Texture)tex).Swizzle;
@@ -61,7 +66,6 @@ public sealed class BfresConverter : IConverter
         }
         
         tex1.Name = tex1.Name.Replace("Tex1", "Tex");
-        file.FileName = file.FileName.Replace("Tex1", "Tex");
         
         tex1.ChangePlatform(
             isSwitch: true,
@@ -72,29 +76,27 @@ public sealed class BfresConverter : IConverter
         
         tex1.Alignment = 0x0C;
 
-        using var ms = new MemoryStream();
-        tex1.Save(ms);
+        using var output = engine.OpenWrite(
+            Path.Combine("Model", $"{tex1.Name}.sbfres"),
+            isCompressed: true, out var compress, ModOutputFolder.Content);
         
-        if (!ms.TryGetBuffer(out var buffer)) {
-            buffer = ms.ToArray();
-        }
+        tex1.Save(output);
         
-        var res = SpanOwner<byte>.Allocate((int)ms.Length);
-        buffer.AsSpan().CopyTo(res.Span);
-        
-        return res;
+        compress?.Invoke();
     }
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToWiiu(ConverterEngine engine, ref ModFile file)
     {
         if (file.Canon.EndsWith(".Tex.bfres")) {
-            return TexToWiiu(data, ref file);
+            using var data = file.Stream();
+            TexToWiiu(engine, data);
+            return true;
         }
         
         throw new NotSupportedException("BFRES files can only be converted to Switch");
     }
     
-    private static SpanOwner<byte> TexToWiiu(ArraySegment<byte> texData, ref FileContext file)
+    private static void TexToWiiu(ConverterEngine engine, Stream texData)
     {
         throw new NotSupportedException("BFRES texture files can only be converted to Switch");
     }

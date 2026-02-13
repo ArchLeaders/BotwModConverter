@@ -1,7 +1,5 @@
-using System;
 using BotwModConverter.Core;
 using BotwModConverter.Core.Attributes;
-using CommunityToolkit.HighPerformance.Buffers;
 
 namespace CoreSourceGenerator.Sample;
 
@@ -10,9 +8,9 @@ namespace CoreSourceGenerator.Sample;
 [MatchesMagic("BY", "ABC")]
 public class Test : IConverter
 {
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ref FileContext file, ModContext context) => default;
+    public bool ToSwitch(ConverterEngine engine, ref ModFile file) => false;
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ref FileContext file, ModContext context) => default;
+    public bool ToWiiu(ConverterEngine engine, ref ModFile file) => false;
 }
 
 [MatchesName("Test2")]
@@ -20,7 +18,7 @@ public class Test : IConverter
 [MatchesMagic("BY2", "ABC2")]
 public class Test2 : IConverter
 {
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ref FileContext file, ModContext context) => default;
+    public bool ToSwitch(ConverterEngine engine, ref ModFile file) => false;
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ref FileContext file, ModContext context) => default;
+    public bool ToWiiu(ConverterEngine engine, ref ModFile file) => false;
 }

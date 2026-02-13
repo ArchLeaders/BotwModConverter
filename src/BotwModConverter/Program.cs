@@ -1,8 +1,5 @@
-﻿using BotwModConverter;
-using BotwModConverter.Core;
-using BotwModConverter.Core.Utils;
+﻿using BotwModConverter.Core;
 using ConsoleAppFramework;
-using Kokuban;
 
 var app = ConsoleApp.Create();
 
@@ -18,39 +15,18 @@ Console.ReadKey();
 return;
 
 void Convert([Argument] string modFolderPath, string? output = null, bool parallel = false, bool clear = false)
-{   
-    bool isSwitch = ModHelper.IsSwitchMod(modFolderPath);
-    output ??= $"{modFolderPath}-{(isSwitch ? "WiiU" : "NX")}";
-
-    var context = new ModContext {
-        IsSwitch = isSwitch
-    };
+{
+    using var engine = new ConverterEngine(modFolderPath, output);
     
     if (clear) {
-        foreach (var folder in Directory.EnumerateDirectories(output)) {
+        foreach (var folder in Directory.EnumerateDirectories(engine.OutputFolder)) {
             Directory.Delete(folder, true);
         }
     }
 
-    if (parallel) {
-        var res = Parallel.ForEach(ModHelper.EnumerateFiles(modFolderPath, output, isSwitch), (file, token) => {
-            var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, file.RelativePath, context);
-            ConsoleHelper.LogOperation(operation, file.RelativePath);
-        });
-
-        if (res.IsCompleted) {
-            goto Completed;
-        }
-
-        ConsoleHelper.LogTaskFailed("Convert Mod in Parallel");
-        return;
+    if (parallel ? engine.ConvertParallel() : engine.Convert()) {
+        // TODO: Log success
     }
 
-    foreach (var file in ModHelper.EnumerateFiles(modFolderPath, output, isSwitch)) {
-        var operation = ConverterHelper.ConvertOrCopy(file.Input, file.Output, file.RelativePath, context);
-        ConsoleHelper.LogOperation(operation, file.RelativePath);
-    }
-
-Completed:
-    Console.WriteLine(Chalk.BrightGreen + "Mod converted successfully.");
+    // TODO: Log error
 }

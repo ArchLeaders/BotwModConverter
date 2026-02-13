@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace BotwModConverter.Core.Utils;
 
-public static class ModHelper
+public static class ModFolderUtils
 {
     public const string NxBaseTitleId = "01007ef00011e000";
     public const string NxAocTitleId = "01007ef00011f001";
@@ -24,7 +24,7 @@ public static class ModHelper
             $"'{modFolderPath}' is not a valid mod folder.");
     }
 
-    public static ReadOnlySpan<char> GetCanonName(string filePath)
+    public static ReadOnlySpan<char> ToCanon(this string filePath)
     {
         var name = Path.GetFileName(filePath.AsSpan());
 
@@ -42,6 +42,24 @@ public static class ModHelper
         return name;
     }
 
+    public static string GetPlatformContentOutput(string outputFolder, Platform platform)
+    {
+        return platform switch {
+            _ => throw new NotSupportedException($"Unsupported platform: {platform}")
+        };
+    }
+
+    public static string GetPlatformOutput(string folder, Platform platform, ModOutputFolder outputFolder)
+    {
+        return (platform, outputFolder) switch {
+            (Platform.Switch, ModOutputFolder.Aoc) => Path.Combine(folder, WiiuAocFolderId),
+            (Platform.Switch, ModOutputFolder.Content) => Path.Combine(folder, WiiuBaseFolderId),
+            (Platform.WiiU, ModOutputFolder.Content) => Path.Combine(folder, NxBaseTitleId, "romfs"),
+            (Platform.WiiU, ModOutputFolder.Aoc) => Path.Combine(folder, NxAocTitleId, "romfs"),
+            _ => throw new NotSupportedException($"Unsupported platform and/or output folder: {platform}, {outputFolder}")
+        };
+    }
+
     public static unsafe ReadOnlySpan<char> ToTexN(this ReadOnlySpan<char> canon, char num)
     {
         fixed (char* ptr = canon) {
@@ -51,9 +69,9 @@ public static class ModHelper
         }
     }
 
-    public static IEnumerable<(string Input, string Output, string RelativePath)> EnumerateFiles(string modFolderPath, string outputFolderPath, bool isSwitch)
+    public static IEnumerable<(string Input, string Output, string RelativePath)> EnumerateFiles(string modFolderPath, string outputFolderPath, Platform platform)
     {
-        return isSwitch
+        return platform is Platform.Switch
             ? EnumerateFiles(modFolderPath, outputFolderPath,
                 (NxBaseTitleId, WiiuBaseFolderId, "romfs"),
                 (NxAocTitleId, Path.Combine(WiiuAocFolderId, "0010"), "romfs"))

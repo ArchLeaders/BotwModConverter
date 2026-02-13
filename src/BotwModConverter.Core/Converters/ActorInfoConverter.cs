@@ -90,9 +90,10 @@ public sealed class ActorInfoConverter : IConverter
         { "WolfLink", 1.87220 },
     }.ToFrozenDictionary();
     
-    public SpanOwner<byte> ToSwitch(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToSwitch(ConverterEngine engine, ref ModFile file)
     {
-        var root = Byml.FromBinary(data, out _, out ushort version);
+        using var data = file.Rent();
+        var root = Byml.FromBinary(data.Span, out _, out ushort version);
         var actors = root.GetMap()["Actors"].GetArray().Select(x => x.GetMap());
 
         foreach (var actor in actors) {
@@ -110,14 +111,14 @@ public sealed class ActorInfoConverter : IConverter
         }
 
         byte[] serialized = root.ToBinary(Endianness.Little, version);
-        var result = SpanOwner<byte>.Allocate(serialized.Length);
-        serialized.CopyTo(result.Span);
-        return result;
+        file.Write(serialized);
+        return true;
     }
 
-    public SpanOwner<byte> ToWiiu(ArraySegment<byte> data, ref FileContext file, ModContext context)
+    public bool ToWiiu(ConverterEngine engine, ref ModFile file)
     {
-        var root = Byml.FromBinary(data, out _, out ushort version);
+        using var data = file.Rent();
+        var root = Byml.FromBinary(data.Span, out _, out ushort version);
         var actors = root.GetMap()["Actors"].GetArray().Select(x => x.GetMap());
 
         foreach (var actor in actors) {
@@ -135,8 +136,7 @@ public sealed class ActorInfoConverter : IConverter
         }
         
         byte[] serialized = root.ToBinary(Endianness.Big, version);
-        var result = SpanOwner<byte>.Allocate(serialized.Length);
-        serialized.CopyTo(result.Span);
-        return result;
+        file.Write(serialized);
+        return true;
     }
 }
