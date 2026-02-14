@@ -90,7 +90,7 @@ public sealed class ActorInfoConverter : IConverter
         { "WolfLink", 1.87220 },
     }.ToFrozenDictionary();
     
-    public bool ToSwitch(ConverterEngine engine, ref ModFile file)
+    public ConvertResult ToSwitch<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
     {
         using var data = file.Rent();
         var root = Byml.FromBinary(data.Span, out _, out ushort version);
@@ -112,10 +112,10 @@ public sealed class ActorInfoConverter : IConverter
 
         byte[] serialized = root.ToBinary(Endianness.Little, version);
         file.Write(serialized);
-        return true;
+        return ConvertResult.Converted;
     }
 
-    public bool ToWiiu(ConverterEngine engine, ref ModFile file)
+    public ConvertResult ToWiiu<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
     {
         using var data = file.Rent();
         var root = Byml.FromBinary(data.Span, out _, out ushort version);
@@ -137,6 +137,6 @@ public sealed class ActorInfoConverter : IConverter
         
         byte[] serialized = root.ToBinary(Endianness.Big, version);
         file.Write(serialized);
-        return true;
+        return ConvertResult.Converted;
     }
 }

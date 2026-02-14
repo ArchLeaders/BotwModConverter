@@ -12,6 +12,7 @@
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageReference Include="CsYaz0" Version="1.0.2" />
     <PackageReference Include="Entish" Version="1.0.0-rc1" />
+    <PackageReference Include="SarcLibrary" Version="3.3.4" />
     <PackageReference Include="System.IO.Hashing" Version="10.0.3" />
   </ItemGroup>
   

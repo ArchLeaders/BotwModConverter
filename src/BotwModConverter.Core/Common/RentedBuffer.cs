@@ -4,29 +4,27 @@ namespace BotwModConverter.Core.Common;
 
 public struct RentedBuffer : IDisposable
 {
-    private readonly byte[] _rented;
-    private readonly int _size;
-    private bool _isOwned = true;
+    public readonly ArraySegment<byte> Segment;
+    public readonly bool IsVirtual;
+    public bool HasExternalHolder;
     
-    public Span<byte> Span => _rented.AsSpan(0, _size);
-    
-    public ArraySegment<byte> Segment => new(_rented, 0, _size);
+    public Span<byte> Span => Segment.AsSpan();
 
-    private RentedBuffer(byte[] rented, int size)
+    private RentedBuffer(ArraySegment<byte> buffer, bool isVirtual = false)
     {
-        _rented = rented;
-        _size = size;
+        Segment = buffer;
+        IsVirtual = isVirtual;
     }
     
-    public static RentedBuffer Rent(string filePath, int? size = null)
+    public static RentedBuffer Rent(string filePath)
     {
         using var fs = File.OpenRead(filePath);
         return Rent(fs);
     }
     
-    public static RentedBuffer Rent(Stream stream, int? size = null)
+    public static RentedBuffer Rent(Stream stream)
     {
-        var buffer = Rent(size ?? (int)stream.Length);
+        var buffer = Rent((int)stream.Length);
         stream.ReadExactly(buffer.Span);
         return buffer;
     }
@@ -34,24 +32,29 @@ public struct RentedBuffer : IDisposable
     public static RentedBuffer Rent(int size)
     {
         var buffer = ArrayPool<byte>.Shared.Rent(size);
-        return new RentedBuffer(buffer, size);
+        return new RentedBuffer(new ArraySegment<byte>(buffer, 0, size));
     }
+
+    public static RentedBuffer Virtual(ArraySegment<byte> data) => new(data, isVirtual: true);
 
     public void DelayReleaseTo(IRentHolder holder)
     {
         holder.Hold(this);
-        _isOwned = false;
+        HasExternalHolder = true;
     }
 
     public void Release()
     {
-        ArrayPool<byte>.Shared.Return(_rented);
+        ArgumentNullException.ThrowIfNull(Segment.Array);
+        ArrayPool<byte>.Shared.Return(Segment.Array);
     }
     
     public void Dispose()
     {
-        if (_isOwned) {
-            Release();
+        if (HasExternalHolder || IsVirtual) {
+            return;
         }
+        
+        Release();
     }
 }

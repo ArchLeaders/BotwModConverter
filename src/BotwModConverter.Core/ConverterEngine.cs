@@ -22,22 +22,22 @@ public sealed class ConverterEngine : IRentHolder
 {
     private readonly ConcurrentBag<RentedBuffer> _rentedBuffers = [];
     private readonly Dictionary<string, Stream> _waitingToConvert = new();
-    private readonly Platform _platform;
     private readonly string _sourceFolder;
 
+    public readonly Platform Platform;
     public readonly string OutputFolder;
 
     public ConverterEngine(string sourceFolderPath, string? output = null)
     {
-        _platform = ModFolderUtils.IsSwitchMod(sourceFolderPath) ? Platform.Switch : Platform.WiiU;
+        Platform = ModFolderUtils.IsSwitchMod(sourceFolderPath) ? Platform.Switch : Platform.WiiU;
         _sourceFolder = sourceFolderPath;
-        OutputFolder = output ?? $"{sourceFolderPath}-{_platform}";
+        OutputFolder = output ?? $"{sourceFolderPath}-{Platform}";
     }
 
     public bool Convert()
     {
-        foreach (var file in ModFolderUtils.EnumerateFiles(_sourceFolder, OutputFolder, _platform)) {
-            Convert(file.Input, file.Output);
+        foreach (var file in ModFolderUtils.EnumerateFiles(_sourceFolder, OutputFolder, Platform)) {
+            Convert(file.Input, file.RelativePath, file.Output);
         }
 
         return true;
@@ -46,8 +46,8 @@ public sealed class ConverterEngine : IRentHolder
     public bool ConvertParallel()
     {
         var res = Parallel.ForEach(
-            ModFolderUtils.EnumerateFiles(_sourceFolder, OutputFolder, _platform),
-            (file, _) => Convert(file.Input, file.Output)
+            ModFolderUtils.EnumerateFiles(_sourceFolder, OutputFolder, Platform),
+            (file, _) => Convert(file.Input, file.RelativePath, file.Output)
         );
 
         if (res.IsCompleted) {
@@ -58,39 +58,41 @@ public sealed class ConverterEngine : IRentHolder
         return false;
     }
 
-    public bool Convert(string filePath, string outputFolderPath)
+    public ConvertResult Convert(string filePath, string relativeFilePath, string outputFolderPath)
     {
-        var file = ModFile.FromFile(filePath, outputFolderPath);
+        var file = ModFile.FromFile(filePath, relativeFilePath, outputFolderPath);
         return Convert(ref file);
     }
 
-    public bool Convert(ref ModFile file)
+    public ConvertResult Convert<T>(ref T file) where T : IModFile, allows ref struct 
     {
-        if (ConverterLookup.Find(file.OutputFileName.ToCanon()) is { } converter) {
-            return _platform switch {
+        if (ConverterLookup.Find(file.Canon) is { } converter) {
+            return Platform switch {
                 Platform.Switch => converter.ToWiiu(this, ref file),
                 Platform.WiiU => converter.ToSwitch(this, ref file),
-                _ => throw new NotSupportedException($"Unsupported platform: {_platform}")
+                _ => throw new NotSupportedException($"Unsupported platform: {Platform}")
             };
         }
 
-        using var headerBuffer = file.Rent(0x20);
-        if (ConverterLookup.Find(file.OutputFileName.ToCanon()) is { } converterFromData) {
-            return _platform switch {
+        Span<byte> headerBuffer = stackalloc byte[0x20];
+        T.Peek(file, headerBuffer);
+        
+        if (ConverterLookup.Find(headerBuffer) is { } converterFromData) {
+            return Platform switch {
                 Platform.Switch => converterFromData.ToWiiu(this, ref file),
                 Platform.WiiU => converterFromData.ToSwitch(this, ref file),
-                _ => throw new NotSupportedException($"Unsupported platform: {_platform}")
+                _ => throw new NotSupportedException($"Unsupported platform: {Platform}")
             };
         }
 
         file.WriteCopy();
-        return true;
+        return ConvertResult.Copied;
     }
 
     public Stream OpenWrite(string relativeFilePath, bool isCompressed, out Action? compress, ModOutputFolder outputFolder)
     {
         var absoluteFilePath = Path.Combine(
-            ModFolderUtils.GetPlatformOutput(OutputFolder, _platform, outputFolder), relativeFilePath);
+            ModFolderUtils.GetPlatformOutput(OutputFolder, Platform, outputFolder), relativeFilePath);
 
         return OpenWrite(absoluteFilePath, isCompressed, out compress);
     }

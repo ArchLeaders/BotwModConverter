@@ -8,9 +8,11 @@ namespace CoreSourceGenerator.Sample;
 [MatchesMagic("BY", "ABC")]
 public class Test : IConverter
 {
-    public bool ToSwitch(ConverterEngine engine, ref ModFile file) => false;
+    public ConvertResult ToSwitch<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
+        => ConvertResult.Converted;
 
-    public bool ToWiiu(ConverterEngine engine, ref ModFile file) => false;
+    public ConvertResult ToWiiu<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
+        => ConvertResult.Converted;
 }
 
 [MatchesName("Test2")]
@@ -18,7 +20,9 @@ public class Test : IConverter
 [MatchesMagic("BY2", "ABC2")]
 public class Test2 : IConverter
 {
-    public bool ToSwitch(ConverterEngine engine, ref ModFile file) => false;
+    public ConvertResult ToSwitch<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
+        => ConvertResult.Converted;
 
-    public bool ToWiiu(ConverterEngine engine, ref ModFile file) => false;
+    public ConvertResult ToWiiu<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
+        => ConvertResult.Converted;
 }

@@ -6,49 +6,51 @@ using CsYaz0;
 
 namespace BotwModConverter.Core;
 
-public ref struct ModFile
+public ref struct ModFile : IModFile
 {
-    public readonly string? AbsolutePath;
-    public readonly string? AbsoluteOutputPath;
-    public readonly string? OutputFolder;
-    public readonly string OutputFileName;
-    public readonly ReadOnlySpan<char> Canon;
-    public bool IsCompressed;
+    public readonly string AbsolutePath;
+    public readonly string AbsoluteOutputPath;
+    private bool _isCompressed;
+    
+    public ReadOnlySpan<char> Canon { get; }
+    
+    public string RelativeFilePath { get; }
 
-    private ModFile(string? absolutePath, string? absoluteOutputPath, string? outputFolder, string outputFileName, ReadOnlySpan<char> canon)
+    private ModFile(string absolutePath, string relativeFilePath, string absoluteOutputPath, ReadOnlySpan<char> canon)
     {
         AbsolutePath = absolutePath;
+        RelativeFilePath = relativeFilePath;
         AbsoluteOutputPath = absoluteOutputPath;
-        OutputFolder = outputFolder;
-        OutputFileName = outputFileName;
         Canon = canon;
     }
 
-    public static ModFile FromFile(string filePath, string outputFilePath)
+    public static ModFile FromFile(string filePath, string relativeFilePath, string outputFilePath)
     {
         return new ModFile(
             filePath,
+            relativeFilePath,
             outputFilePath,
-            Path.GetDirectoryName(outputFilePath),
-            Path.GetFileName(outputFilePath),
             filePath.ToCanon()
         );
     }
 
-    public RentedBuffer Rent(int? size = null)
+    public static void Peek<T>(T file, in Span<byte> view) where T : IModFile, allows ref struct
     {
-        if (AbsolutePath is null) {
-            throw new NotSupportedException("Cannot rent virtual mod files.");
-        }
-        
-        var raw = RentedBuffer.Rent(AbsolutePath, size);
+        var modFile = Unsafe.As<T, ModFile>(ref file);
+        using var fs = File.OpenRead(modFile.AbsolutePath);
+        fs.ReadExactly(view);
+    }
+
+    public RentedBuffer Rent()
+    {
+        var raw = RentedBuffer.Rent(AbsolutePath);
         var data = raw.Span;
 
         if (Unsafe.As<byte, int>(ref data[0]) != Yaz0.MAGIC) {
             return raw;
         }
         
-        IsCompressed = true;
+        _isCompressed = true;
 
         try {
             var decompressed = RentedBuffer.Rent(Yaz0.GetDecompressedSize(data));
@@ -63,10 +65,6 @@ public ref struct ModFile
 
     public Stream Stream()
     {
-        if (AbsolutePath is null) {
-            throw new NotSupportedException("Cannot stream virtual mod files.");
-        }
-        
         var fs = File.OpenRead(AbsolutePath);
 
         if (fs.Read<int>() != Yaz0.MAGIC) {
@@ -74,7 +72,7 @@ public ref struct ModFile
             return fs;
         }
         
-        IsCompressed = true;
+        _isCompressed = true;
 
         fs.Seek(0, SeekOrigin.Begin);
         using var buffer = RentedBuffer.Rent(fs);
@@ -86,17 +84,13 @@ public ref struct ModFile
         return new MemoryStream(decompressed, writable: false);
     }
     
-    public void Write(ReadOnlySpan<byte> data)
+    public void Write(ArraySegment<byte> data)
     {
-        if (AbsoluteOutputPath is null) {
-            throw new NotSupportedException("Cannot write virtual mod files.");
-        }
-        
         if (Path.GetDirectoryName(AbsoluteOutputPath) is { } folderPath) {
             Directory.CreateDirectory(folderPath);
         }
 
-        if (IsCompressed) {
+        if (_isCompressed) {
             using var compressed = Yaz0.Compress(data);
             File.WriteAllBytes(AbsoluteOutputPath, compressed);
         }
@@ -104,22 +98,16 @@ public ref struct ModFile
         File.WriteAllBytes(AbsoluteOutputPath, data);
     }
 
-    public Stream OpenWrite(out Action? compress)
+    public Stream OpenWrite<T>(out Action<T>? compress) where T : IModFile, allows ref struct
     {
-        if (AbsoluteOutputPath is null) {
-            throw new NotSupportedException("Cannot write virtual mod files.");
-        }
-
-        return ConverterEngine.OpenWrite(AbsoluteOutputPath, IsCompressed, out compress);
+        var result = ConverterEngine.OpenWrite(AbsoluteOutputPath, _isCompressed, out var compressSimple);
+        compress = compressSimple is not null ? _ => compressSimple() : null;
+        
+        return result;
     }
 
     public void WriteCopy()
     {
-        if (AbsoluteOutputPath is null) {
-            throw new NotSupportedException("Cannot copy virtual mod files.");
-        }
-        
-        string outputFilePath = OutputFolder is { } folder ? Path.Combine(folder, OutputFileName) : OutputFileName;
-        File.Copy(AbsoluteOutputPath, outputFilePath);
+        File.Copy(AbsolutePath, AbsoluteOutputPath);
     }
 }

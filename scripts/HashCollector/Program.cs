@@ -7,7 +7,7 @@ using CsYaz0;
 using Revrs;
 using SarcLibrary;
 
-Dictionary<ulong, ulong> hashes = [];
+Dictionary<ulong, HashSet<ulong>> hashes = [];
 
 foreach (var root in args[..^1]) {
     foreach (var file in Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories)) {
@@ -15,17 +15,19 @@ foreach (var root in args[..^1]) {
             continue;
         }
 
-        Console.WriteLine(file);
+        string relativeFilePath = Path.GetRelativePath(root, file);
+        Console.WriteLine(relativeFilePath);
 
         using var buffer = RentedBuffer.Rent(file);
         if (!isCompressed) {
-            ProcessSarc(buffer, hashes);
+            ProcessSarc(buffer.Span, hashes);
             continue;
         }
 
         using var decompressed = RentedBuffer.Rent(Yaz0.GetDecompressedSize(buffer.Span));
-        Yaz0.Decompress(buffer.Span, decompressed.Span);
-        ProcessSarc(decompressed, hashes);
+        var data = decompressed.Span;
+        Yaz0.Decompress(buffer.Span, data);
+        ProcessSarc(data, hashes);
     }
 }
 
@@ -35,7 +37,10 @@ fs.Write(hashes.Count);
 
 foreach (var (key, value) in hashes.OrderBy(x => x.Key)) {
     fs.Write(key);
-    fs.Write(value);
+    fs.Write(value.Count);
+    foreach (ulong hash in value) {
+        fs.Write(hash);
+    }
 }
 
 return;
@@ -51,6 +56,11 @@ static bool IsSarc(string filePath, out bool isCompressed)
     Span<byte> view = stackalloc byte[0x20]; 
     _ = fs.Read(view);
 
+    return IsSarcFromView(view, out isCompressed);
+}
+
+static bool IsSarcFromView(Span<byte> view, out bool isCompressed)
+{
     if (Unsafe.As<byte, int>(ref view[0]) == Sarc.MAGIC) {
         isCompressed = false;
         return true;
@@ -60,15 +70,45 @@ static bool IsSarc(string filePath, out bool isCompressed)
     return Unsafe.As<byte, int>(ref view[0x11]) == Sarc.MAGIC;
 }
 
-static void ProcessSarc(RentedBuffer buffer, Dictionary<ulong, ulong> hashes)
+static void ProcessFile(string relativeFilePath, Span<byte> buffer, Dictionary<ulong, HashSet<ulong>> hashes)
 {
-    var reader = RevrsReader.Native(buffer.Span);
+    if (relativeFilePath.EndsWith("Demo002_0.sbfres")) {
+        File.WriteAllBytes("D:\\bin\\debug.sbfres", buffer);
+    }
+    
+    if (!IsSarcFromView(buffer, out bool isCompressed)) {
+        return;
+    }
+
+    Console.WriteLine(relativeFilePath);
+
+    if (!isCompressed) {
+        ProcessSarc(buffer, hashes);
+        return;
+    }
+
+    using var decompressed = RentedBuffer.Rent(Yaz0.GetDecompressedSize(buffer));
+    var data = decompressed.Span;
+    Yaz0.Decompress(buffer, data);
+    ProcessSarc(data, hashes);
+}
+
+static void ProcessSarc(Span<byte> buffer, Dictionary<ulong, HashSet<ulong>> hashes)
+{
+    var reader = RevrsReader.Native(buffer);
     var sarc = new ImmutableSarc(ref reader);
 
     foreach (var (name, data) in sarc) {
         var nameHash = XxHash3.HashToUInt64(name.ToCanon(trimToName: false).Cast<char, byte>());
         var dataHash = XxHash3.HashToUInt64(data);
         
-        hashes[nameHash] = dataHash;
+        ProcessFile(name, data, hashes);
+
+        if (!hashes.TryGetValue(nameHash, out var value)) {
+            hashes[nameHash] = [dataHash];
+            continue;
+        }
+        
+        value.Add(dataHash);
     }
 }

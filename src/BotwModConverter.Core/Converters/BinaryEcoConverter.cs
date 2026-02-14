@@ -11,7 +11,7 @@ namespace BotwModConverter.Core.Converters;
 [MatchesExtension(".beco")]
 public sealed unsafe class BinaryEcoConverter : IConverter
 {
-    public bool ToSwitch(ConverterEngine engine, ref ModFile file)
+    public ConvertResult ToSwitch<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
     {
         using var buffer = file.Rent();
         var data = buffer.Span;
@@ -21,10 +21,10 @@ public sealed unsafe class BinaryEcoConverter : IConverter
             SwapSegments(offset, ref data);
         }
 
-        return true;
+        return ConvertResult.Converted;
     }
 
-    public bool ToWiiu(ConverterEngine engine, ref ModFile file)
+    public ConvertResult ToWiiu<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct
     {
         using var buffer = file.Rent();
         var data = buffer.Span;
@@ -34,7 +34,7 @@ public sealed unsafe class BinaryEcoConverter : IConverter
             SwapSegments(offset, ref data);
         }
 
-        return true;
+        return ConvertResult.Converted;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

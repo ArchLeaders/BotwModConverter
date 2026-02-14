@@ -2,7 +2,7 @@ namespace BotwModConverter.Core;
 
 public interface IConverter
 {
-    public bool ToSwitch(ConverterEngine engine, ref ModFile file);
-    
-    public bool ToWiiu(ConverterEngine engine, ref ModFile file);
+    ConvertResult ToSwitch<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct;
+
+    ConvertResult ToWiiu<T>(ConverterEngine engine, ref T file) where T : IModFile, allows ref struct;
 }
