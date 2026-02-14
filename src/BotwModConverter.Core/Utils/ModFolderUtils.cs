@@ -24,9 +24,9 @@ public static class ModFolderUtils
             $"'{modFolderPath}' is not a valid mod folder.");
     }
 
-    public static ReadOnlySpan<char> ToCanon(this string filePath)
+    public static ReadOnlySpan<char> ToCanon(this string filePath, bool trimToName = true) 
     {
-        var name = Path.GetFileName(filePath.AsSpan());
+        var name = trimToName ? Path.GetFileName(filePath.AsSpan()) : filePath.AsSpan();
 
         // TL;DR if the file ext. starts with 's' remove it, unless it's 'sarc'
         if (name.LastIndexOf('.') is var pIdx and > -1 && name.Length > ++pIdx && name[pIdx] is 's' && (name.Length < pIdx + 4 || name[pIdx..(pIdx + 4)] is not "sarc")) {

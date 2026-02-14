@@ -2,6 +2,9 @@
   <Folder Name="/Libraries/">
     <Project Path="lib/BfresLibrary/BfresLibrary/BfresLibrary.csproj" />
   </Folder>
+  <Folder Name="/Scripts/">
+    <Project Path="scripts/HashCollector/HashCollector.csproj" />
+  </Folder>
   <Folder Name="/SourceGenerators/">
     <Project Path="src/SourceGenerators/CoreSourceGenerator/CoreSourceGenerator.Sample/CoreSourceGenerator.Sample.csproj" />
     <Project Path="src/SourceGenerators/CoreSourceGenerator/CoreSourceGenerator/CoreSourceGenerator.csproj" />
